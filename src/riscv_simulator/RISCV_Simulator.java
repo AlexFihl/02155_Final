@@ -63,14 +63,20 @@ public class RISCV_Simulator {
 			}
 			
 			pc++;
-			for(int i = 0; i < reg.length; ++i)
-			{
-				System.out.print(reg[i] + " ");
-			}
-			System.out.println();
+			printRG(); //For testing purpose
+			
 			if(pc >= program.length)
 				break;
 		}
+	}
+
+
+	private static void printRG() {
+		for(int i = 0; i < reg.length; ++i)
+		{
+			System.out.print(reg[i] + " ");
+		}
+		System.out.println();
 	}
 	
 	
