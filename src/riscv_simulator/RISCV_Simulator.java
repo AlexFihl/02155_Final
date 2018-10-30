@@ -25,16 +25,36 @@ public class RISCV_Simulator {
 				reg[rd] = reg[rs1] + imm;
 				break;
 			case 0x33:
-				switch(funt7) {
-				case 0x00:
-					reg[rd] = reg[rs1] + reg[rs2];
+				switch(funt3) {
+				case 0x0:
+					if(funt7 == 0x00)
+						reg[rd] = reg[rs1] + reg[rs2]; //add
+					else
+						reg[rd] = reg[rs1] - reg[rs2]; //sub
 					break;
-				case 0x20:
-					reg[rd] = reg[rs1] - reg[rs2];
+				case 0x1:
+					reg[rd] = reg[rs1] << reg[rs2]; //sll
 					break;
-				default:
-					System.out.println("Funt7 " + funt7 + " not yet implemented");
+				case 0x2:
+					reg[rd] = reg[rs1] < reg[rs2] ? 1 : 0; //slt
 					break;
+				case 0x3:
+					reg[rd] = reg[rs1] < reg[rs2] ? 1 : 0; //sltu
+					break;
+				case 0x4:
+					reg[rd] = reg[rs1] ^ reg[rs2]; //xor
+					break;
+				case 0x5:
+					if(funt7 == 0x00)
+						reg[rd] = reg[rs1] >> reg[rs2]; //srl
+					else
+						reg[rd] = reg[rs1] >> reg[rs2]; //sra
+					break;
+				case 0x6:
+					reg[rd] = reg[rs1] | reg[rs2]; //or;
+					break;
+				case 0x7:
+					reg[rd] = reg[rs1] & reg[rs2]; //and
 				}
 				break;
 			default:
