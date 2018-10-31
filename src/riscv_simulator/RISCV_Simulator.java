@@ -1,8 +1,12 @@
 package riscv_simulator;
 
+import java.util.Scanner;
+
 public class RISCV_Simulator {
 	
 	public static void main(String[] args) {
+		
+		Scanner scan = new Scanner(System.in);
 		
 		
 		CPU cpu1 = new CPU();
