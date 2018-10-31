@@ -14,7 +14,8 @@ public class CPU {
 	private int rs2;
 	private int funt7;
 	private int imm;
-
+	
+	
 	public CPU() {
 
 	}
@@ -36,9 +37,9 @@ public class CPU {
 		case 0x33:
 			opCode0x33();
 			break;
-		// case 0x73:
-		// opCode0x73();
-		// break;
+//		case 0x73:
+//			opCode0x73();
+//			break;
 		default:
 			System.out.println("Opcode " + opcode + " not yet implemented");
 			break;
@@ -47,13 +48,16 @@ public class CPU {
 		pc++;
 		if (pc >= program.length)
 			return 1;
-		return 0;
+		else
+			return 0;
 	}
 
 	private void opCode0x73() {
 		switch (funt3) {
 		case 0x00: // ecall
-
+			break;
+		default:
+			System.out.println("funt3 " + funt3 + " not yet implemented");
 			break;
 		}
 	}
@@ -93,6 +97,10 @@ public class CPU {
 			break;
 		case 0x7: // and
 			reg[rd] = reg[rs1] & reg[rs2];
+		default:
+			System.out.println("funt3 " + funt3 + " not yet implemented");
+			break;
+			
 		}
 	}
 

@@ -18,14 +18,16 @@ public class RISCV_Simulator {
 		System.out.println();
 
 		CPU cpu1 = new CPU();
-		// cpu1.loadProgram(programLines);
+		//cpu1.loadProgram(programLines);
 		cpu1.loadProgram(readProgram());
 
 		for (;;) {
 			int x = cpu1.oneStep();
 			printRG(cpu1); // For testing purpose
-			if (x == 1)
+			if (x > 0) {
+				System.out.println("Exit code was: " + x);
 				break;
+			}
 		}
 
 	}
