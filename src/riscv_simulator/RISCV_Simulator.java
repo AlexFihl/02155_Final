@@ -5,9 +5,11 @@ import java.util.Scanner;
 public class RISCV_Simulator {
 	
 	public static void main(String[] args) {
+
+		Scanner consoleReader = new Scanner(System.in);
 		
-		Scanner scan = new Scanner(System.in);
-		
+		String inputString;
+		System.out.println("Which prgram do you want to load");
 		
 		CPU cpu1 = new CPU();
 		
