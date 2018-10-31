@@ -36,6 +36,9 @@ public class CPU {
 		case 0x33:
 			opCode0x33();
 			break;
+		case 0x73:
+			opCode0x73();
+			break;
 		default:
 			System.out.println("Opcode " + opcode + " not yet implemented");
 			break;
@@ -45,6 +48,10 @@ public class CPU {
 		if(pc >= program.length)
 			return 1;
 		return 0;
+	}
+
+	private void opCode0x73() {
+		
 	}
 
 	private void opCode0x13() {

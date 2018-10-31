@@ -12,17 +12,11 @@ public class RISCV_Simulator {
 
 		byte[] programFile = getPrgramFile();
 		int[] programLines = new int[programFile.length / 4];
-		for (int i = 0; i < programFile.length / 4; i++) {
-			for (int x = 0; x <= 3; x++) {
+		for (int i = 0; i < programFile.length / 4; i++)
+			for (int x = 0; x <= 3; x++)
 				programLines[i] += (programFile[i * 4 + x] & 0xff) << 8 * x;
-				System.out.println(String.format("0x%08X", programLines[i]) + " ");
-			}
-			System.out.println();
-			// System.out.print(String.format("0x%08X", programLines[i]) + " ");
-		}
 		System.out.println();
-		
-		
+
 		CPU cpu1 = new CPU();
 		cpu1.loadProgram(programLines);
 
