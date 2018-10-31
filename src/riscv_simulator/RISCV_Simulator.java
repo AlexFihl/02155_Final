@@ -2,17 +2,29 @@ package riscv_simulator;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Scanner;
 
 public class RISCV_Simulator {
 
 	public static void main(String[] args) {
 
-		Scanner programFile = getPrgramFile();
-		System.out.println(programFile.next());
+		byte[] programFile = getPrgramFile();
+		int[] programLines = new int[programFile.length / 4];
+		for (int i = 0; i < programFile.length / 4; i++) {
+			for (int x = 0; x <= 3; x++) {
+				programLines[i] += (programFile[i * 4 + x] & 0xff) << 8 * x;
+				System.out.println(String.format("0x%08X", programLines[i]) + " ");
+			}
+			System.out.println();
+			// System.out.print(String.format("0x%08X", programLines[i]) + " ");
+		}
+		System.out.println();
+		
+		
 		CPU cpu1 = new CPU();
-
-		cpu1.loadProgram(readProgram());
+		cpu1.loadProgram(programLines);
 
 		for (;;) {
 			int x = cpu1.oneStep();
@@ -23,7 +35,7 @@ public class RISCV_Simulator {
 
 	}
 
-	private static Scanner getPrgramFile() {
+	private static byte[] getPrgramFile() {
 		Scanner consoleReader = new Scanner(System.in);
 
 		System.out.println("Which prgram do you want to load, type in the wanted number");
@@ -31,19 +43,21 @@ public class RISCV_Simulator {
 		File[] listOfFiles = folder.listFiles();
 
 		int i = 0;
-		for (File f : listOfFiles) {
+		for (File f : listOfFiles)
 			System.out.print(i++ + ": " + f.getName() + " ; ");
-		}
+
 		System.out.println();
 		while (true) {
 			try {
 				int x = getScannerInt(consoleReader);
 				if (x < listOfFiles.length)
-					return new Scanner(listOfFiles[x]);
+					return Files.readAllBytes(listOfFiles[x].toPath());
 				else
 					System.out.println("This is not a valid number");
 			} catch (FileNotFoundException e) {
 				System.out.println("The file couldn't be found");
+			} catch (IOException e) {
+
 			}
 		}
 	}
@@ -53,14 +67,6 @@ public class RISCV_Simulator {
 			System.out.print(cpu1.getReg()[i] + " ");
 		}
 		System.out.println();
-	}
-
-	private static int[] readProgram() {
-		int temp[] = { 0x00200093, // addi x1 x0 2
-				0x00300113, // addi x2 x0 3
-				0x002081b3, // add x3 x1 x2
-		};
-		return temp;
 	}
 
 	private static int getScannerInt(Scanner reader) {
