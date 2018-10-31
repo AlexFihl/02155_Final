@@ -1,11 +1,11 @@
 package riscv_simulator;
 
 public class CPU {
-	
+
 	private int pc;
 	private int reg[] = new int[32];
 	private int program[];
-	
+
 	private int instruction;
 	private int opcode;
 	private int rd;
@@ -14,11 +14,11 @@ public class CPU {
 	private int rs2;
 	private int funt7;
 	private int imm;
-	
+
 	public CPU() {
-		
+
 	}
-	
+
 	public int oneStep() {
 		instruction = program[pc];
 		opcode = instruction & 0x7f;
@@ -28,32 +28,32 @@ public class CPU {
 		rs2 = (instruction >> 20) & 0x1f;
 		funt7 = instruction >> 25;
 		imm = instruction >> 20;
-		
-		switch(opcode) {
+
+		switch (opcode) {
 		case 0x13:
 			opCode0x13();
 			break;
 		case 0x33:
 			opCode0x33();
 			break;
-//		case 0x73:
-//			opCode0x73();
-//			break;
+		// case 0x73:
+		// opCode0x73();
+		// break;
 		default:
 			System.out.println("Opcode " + opcode + " not yet implemented");
 			break;
 		}
-		
+
 		pc++;
-		if(pc >= program.length)
+		if (pc >= program.length)
 			return 1;
 		return 0;
 	}
 
 	private void opCode0x73() {
-		switch(funt3) {
-		case 0x00: //ecall
-			
+		switch (funt3) {
+		case 0x00: // ecall
+
 			break;
 		}
 	}
@@ -63,35 +63,35 @@ public class CPU {
 	}
 
 	private void opCode0x33() {
-		switch(funt3) {
-		case 0x0: 
-			if(funt7 == 0x00) //add
-				reg[rd] = reg[rs1] + reg[rs2]; 
-			else //sub
-				reg[rd] = reg[rs1] - reg[rs2]; 
+		switch (funt3) {
+		case 0x0:
+			if (funt7 == 0x00) // add
+				reg[rd] = reg[rs1] + reg[rs2];
+			else // sub
+				reg[rd] = reg[rs1] - reg[rs2];
 			break;
-		case 0x1: //sll
-			reg[rd] = reg[rs1] << reg[rs2]; 
+		case 0x1: // sll
+			reg[rd] = reg[rs1] << reg[rs2];
 			break;
-		case 0x2: //slt
-			reg[rd] = reg[rs1] < reg[rs2] ? 1 : 0; 
+		case 0x2: // slt
+			reg[rd] = reg[rs1] < reg[rs2] ? 1 : 0;
 			break;
-		case 0x3: //sltu
-			reg[rd] = reg[rs1] < reg[rs2] ? 1 : 0; 
+		case 0x3: // sltu
+			reg[rd] = reg[rs1] < reg[rs2] ? 1 : 0;
 			break;
-		case 0x4://xor
-			reg[rd] = reg[rs1] ^ reg[rs2]; 
+		case 0x4:// xor
+			reg[rd] = reg[rs1] ^ reg[rs2];
 			break;
 		case 0x5:
-			if(funt7 == 0x00) //srl
-				reg[rd] = reg[rs1] >> reg[rs2]; 
-			else //sra
-				reg[rd] = reg[rs1] >> reg[rs2]; 
+			if (funt7 == 0x00) // srl
+				reg[rd] = reg[rs1] >> reg[rs2];
+			else // sra
+				reg[rd] = reg[rs1] >> reg[rs2];
 			break;
-		case 0x6: //or
+		case 0x6: // or
 			reg[rd] = reg[rs1] | reg[rs2];
 			break;
-		case 0x7: //and
+		case 0x7: // and
 			reg[rd] = reg[rs1] & reg[rs2];
 		}
 	}
