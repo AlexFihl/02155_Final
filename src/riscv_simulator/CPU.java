@@ -36,9 +36,9 @@ public class CPU {
 		case 0x33:
 			opCode0x33();
 			break;
-		case 0x73:
-			opCode0x73();
-			break;
+//		case 0x73:
+//			opCode0x73();
+//			break;
 		default:
 			System.out.println("Opcode " + opcode + " not yet implemented");
 			break;
@@ -51,7 +51,11 @@ public class CPU {
 	}
 
 	private void opCode0x73() {
-		
+		switch(funt3) {
+		case 0x00: //ecall
+			
+			break;
+		}
 	}
 
 	private void opCode0x13() {
@@ -60,40 +64,40 @@ public class CPU {
 
 	private void opCode0x33() {
 		switch(funt3) {
-		case 0x0:
-			if(funt7 == 0x00)
-				reg[rd] = reg[rs1] + reg[rs2]; //add
-			else
-				reg[rd] = reg[rs1] - reg[rs2]; //sub
+		case 0x0: 
+			if(funt7 == 0x00) //add
+				reg[rd] = reg[rs1] + reg[rs2]; 
+			else //sub
+				reg[rd] = reg[rs1] - reg[rs2]; 
 			break;
-		case 0x1:
-			reg[rd] = reg[rs1] << reg[rs2]; //sll
+		case 0x1: //sll
+			reg[rd] = reg[rs1] << reg[rs2]; 
 			break;
-		case 0x2:
-			reg[rd] = reg[rs1] < reg[rs2] ? 1 : 0; //slt
+		case 0x2: //slt
+			reg[rd] = reg[rs1] < reg[rs2] ? 1 : 0; 
 			break;
-		case 0x3:
-			reg[rd] = reg[rs1] < reg[rs2] ? 1 : 0; //sltu
+		case 0x3: //sltu
+			reg[rd] = reg[rs1] < reg[rs2] ? 1 : 0; 
 			break;
-		case 0x4:
-			reg[rd] = reg[rs1] ^ reg[rs2]; //xor
+		case 0x4://xor
+			reg[rd] = reg[rs1] ^ reg[rs2]; 
 			break;
 		case 0x5:
-			if(funt7 == 0x00)
-				reg[rd] = reg[rs1] >> reg[rs2]; //srl
-			else
-				reg[rd] = reg[rs1] >> reg[rs2]; //sra
+			if(funt7 == 0x00) //srl
+				reg[rd] = reg[rs1] >> reg[rs2]; 
+			else //sra
+				reg[rd] = reg[rs1] >> reg[rs2]; 
 			break;
-		case 0x6:
-			reg[rd] = reg[rs1] | reg[rs2]; //or;
+		case 0x6: //or
+			reg[rd] = reg[rs1] | reg[rs2];
 			break;
-		case 0x7:
-			reg[rd] = reg[rs1] & reg[rs2]; //and
+		case 0x7: //and
+			reg[rd] = reg[rs1] & reg[rs2];
 		}
 	}
 
-	public void loadProgram(int[] readProgram) {
-		program = readProgram;
+	public void loadProgram(int[] program) {
+		this.program = program;
 	}
 
 	public int[] getReg() {
