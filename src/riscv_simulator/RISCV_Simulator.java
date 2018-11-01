@@ -10,15 +10,10 @@ public class RISCV_Simulator {
 
 	public static void main(String[] args) {
 
-		byte[] programFile = getPrgramFile();
-		int[] programLines = new int[programFile.length / 4];
-		for (int i = 0; i < programFile.length / 4; i++)
-			for (int x = 0; x <= 3; x++)
-				programLines[i] += (programFile[i * 4 + x] & 0xff) << 8 * x;
-		System.out.println();
+		int[] programLines = getTheProgramFromAFile();
 
 		CPU cpu1 = new CPU();
-		//cpu1.loadProgram(programLines);
+		cpu1.loadProgram(programLines);
 		cpu1.loadProgram(readProgram());
 
 		for (;;) {
@@ -32,6 +27,16 @@ public class RISCV_Simulator {
 
 	}
 
+	private static int[] getTheProgramFromAFile() {
+		byte[] programFile = getPrgramFile();
+		int[] programLines = new int[programFile.length / 4];
+		for (int i = 0; i < programFile.length / 4; i++)
+			for (int x = 0; x <= 3; x++)
+				programLines[i] += (programFile[i * 4 + x] & 0xff) << 8 * x;
+		System.out.println();
+		return programLines;
+	}
+
 	private static byte[] getPrgramFile() {
 		Scanner consoleReader = new Scanner(System.in);
 
@@ -41,7 +46,7 @@ public class RISCV_Simulator {
 
 		int i = 0;
 		for (File f : listOfFiles)
-			System.out.print(i++ + ": " + f.getName() + " ; ");
+			System.out.print(i++ + ": " + f.getName() + "; ");
 
 		System.out.println();
 		while (true) {
