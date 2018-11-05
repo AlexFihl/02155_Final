@@ -10,11 +10,12 @@ public class RISCV_Simulator {
 
 	public static void main(String[] args) {
 
+		System.out.println("Welcome to an RISC-V simulator \nMake by Alex and Anders");
 		int[] programLines = getTheProgramFromAFile();
 
 		CPU cpu1 = new CPU();
 		cpu1.loadProgram(programLines);
-		cpu1.loadProgram(readProgram());
+		//cpu1.loadProgram(readProgram());
 		
 		int x = 0;
 		while(x == 0) {
