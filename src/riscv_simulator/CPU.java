@@ -88,7 +88,7 @@ public class CPU {
 			break;
 		case 0x5:
 			if (funt7 == 0x00) // srl
-				reg[rd] = reg[rs1] >> reg[rs2];
+				reg[rd] = reg[rs1] >>> reg[rs2];
 			else // sra
 				reg[rd] = reg[rs1] >> reg[rs2];
 			break;
