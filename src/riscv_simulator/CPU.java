@@ -18,7 +18,7 @@ public class CPU {
 	private int exit;
 	
 	public CPU() {
-		exit = 0;
+		exit = -1;
 	}
 
 	public boolean oneStep() {
@@ -46,7 +46,7 @@ public class CPU {
 		}
 
 		pc++;
-		if (pc >= program.length || exit > 0)
+		if (pc >= program.length || exit != -1)
 			return false;
 		else
 			return true;
