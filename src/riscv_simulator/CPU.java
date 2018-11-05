@@ -16,9 +16,11 @@ public class CPU {
 	private int imm;
 
 	private int exit;
+	private boolean jump;
 	
 	public CPU() {
 		exit = -1;
+		jump = false;
 	}
 
 	public boolean oneStep() {
@@ -47,8 +49,9 @@ public class CPU {
 			System.out.println("Opcode " + String.format("0x%01X", opcode) + " not yet implemented");
 			break;
 		}
-
-		pc++;
+		
+		if (!jump)
+			pc++;
 		if (pc >= program.length || exit != -1)
 			return false;
 		else
