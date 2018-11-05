@@ -75,7 +75,7 @@ public class CPU {
 				reg[rd] = reg[rs1] - reg[rs2];
 			break;
 		case 0x1: // sll
-			reg[rd] = reg[rs1] << reg[rs2];
+			reg[rd] = reg[rs1] << (reg[rs2] & 0x1f);
 			break;
 		case 0x2: // slt
 			reg[rd] = reg[rs1] < reg[rs2] ? 1 : 0;
@@ -88,9 +88,9 @@ public class CPU {
 			break;
 		case 0x5:
 			if (funt7 == 0x00) // srl
-				reg[rd] = reg[rs1] >>> reg[rs2];
+				reg[rd] = reg[rs1] >>> (reg[rs2] & 0x1f);
 			else // sra
-				reg[rd] = reg[rs1] >> reg[rs2];
+				reg[rd] = reg[rs1] >> (reg[rs2] & 0x1f);
 			break;
 		case 0x6: // or
 			reg[rd] = reg[rs1] | reg[rs2];
