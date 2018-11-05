@@ -15,15 +15,13 @@ public class RISCV_Simulator {
 
 		CPU cpu1 = new CPU();
 		cpu1.loadProgram(programLines);
-		
-		int x = 0;
-		while(x == 0) {
-			printRG(cpu1); // For testing purpose
-			x = cpu1.oneStep();
-		}
-		System.out.println("Exit code was: " + x);
-		
 
+		boolean nextStep = true;
+		while (nextStep) {
+			printRG(cpu1); // For testing purpose
+			nextStep = cpu1.oneStep();
+		}
+		System.out.println("Exit code was: " + cpu1.getExit());
 	}
 
 	private static int[] getTheProgramFromAFile() {

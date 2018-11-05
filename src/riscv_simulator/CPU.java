@@ -14,13 +14,14 @@ public class CPU {
 	private int rs2;
 	private int funt7;
 	private int imm;
-	
+
+	private int exit;
 	
 	public CPU() {
-
+		exit = 0;
 	}
 
-	public int oneStep() {
+	public boolean oneStep() {
 		instruction = program[pc];
 		opcode = instruction & 0x7f;
 		rd = (instruction >> 7) & 0x1f;
@@ -36,24 +37,41 @@ public class CPU {
 		case 0x33:
 			opCode0x33();
 			break;
-//		case 0x73:
-//			opCode0x73();
-//			break;
+		case 0x73:
+			opCode0x73();
+			break;
 		default:
 			System.out.println("Opcode " + String.format("0x%01X", opcode) + " not yet implemented");
 			break;
 		}
 
 		pc++;
-		if (pc >= program.length)
-			return 1;
+		if (pc >= program.length || exit > 0)
+			return false;
 		else
-			return 0;
+			return true;
 	}
 
 	private void opCode0x73() {
 		switch (funt3) {
 		case 0x0: // ecall
+			switch (reg[10]) {
+			case 0x01:
+				System.out.println(reg[11]);
+				break;
+			case 0x04:
+				break;
+			case 0x09:
+				break;
+			case 0x0a:
+				exit = reg[10];
+				break;
+			case 0x0b://Print out ASCII signed
+				break;
+			case 0x11:
+				exit = reg[10];
+				break;
+			}
 			break;
 		default:
 			System.out.println("funt3 " + String.format("0x%01X", funt3) + " not yet implemented");
@@ -64,10 +82,10 @@ public class CPU {
 	private void opCode0x13() {
 		imm = instruction >> 20;
 		switch (funt3) {
-		case 0x0: //Addi
+		case 0x0: // Addi
 			reg[rd] = reg[rs1] + imm;
 			break;
-		case 0x1: //SLLI
+		case 0x1: // SLLI
 			reg[rd] = reg[rs1] << (imm & 0x1f);
 			break;
 		case 0x2: // SLTI
@@ -80,7 +98,7 @@ public class CPU {
 			reg[rd] = reg[rs1] ^ imm;
 			break;
 		case 0x5:
-			if(imm >>> 7 == 0x00) //SRLI
+			if (imm >>> 7 == 0x00) // SRLI
 				reg[rd] = reg[rs1] >>> (reg[rs2] & 0x1f);
 			else // SRAI
 				reg[rd] = reg[rs1] >> (reg[rs2] & 0x1f);
@@ -92,7 +110,7 @@ public class CPU {
 			reg[rd] = reg[rs1] & imm;
 			break;
 		}
-		
+
 	}
 
 	private void opCode0x33() {
@@ -138,5 +156,9 @@ public class CPU {
 
 	public int[] getReg() {
 		return reg;
+	}
+	
+	public int getExit() {
+		return exit;
 	}
 }
