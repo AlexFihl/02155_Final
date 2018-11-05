@@ -43,9 +43,12 @@ public class RISCV_Simulator {
 					printRG(cpu); // For testing purpose
 				nextStep = cpu.oneStep();
 			}
+			
+			System.out.println("The content of the registers was:\n");
 			int[] reg = cpu.getReg();
 			for (int i = 0; i < reg.length; i++)
-				System.out.println("x" + i + ": " + "0x%08X",  reg[i]);
+				System.out.println("x" + String.format("%02d", i) + ": " + String.format("0x%08X",  reg[i]));
+			System.out.println();
 			
 			if (debug)
 				System.out.println("Exit code was: " + cpu.getExit());
