@@ -28,7 +28,7 @@ public class CPU {
 		funt3 = (instruction >> 12) & 0x7;
 		rs1 = (instruction >> 15) & 0x1f;
 		rs2 = (instruction >> 20) & 0x1f;
-		funt7 = instruction >> 25;
+		funt7 = (instruction >> 25) & 0x7f;
 
 		switch (opcode) {
 		case 0x13:
@@ -36,6 +36,9 @@ public class CPU {
 			break;
 		case 0x33:
 			opCode0x33();
+			break;
+		case 0x37:
+			reg[rd] = instruction & (0xfffff << 12);
 			break;
 		case 0x73:
 			opCode0x73();
