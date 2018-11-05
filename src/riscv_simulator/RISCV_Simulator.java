@@ -34,17 +34,21 @@ public class RISCV_Simulator {
 
 		while (true) {
 			int[] programLines = getTheProgramFromAFile(consoleReader);
-			CPU cpu1 = new CPU();
-			cpu1.loadProgram(programLines);
+			CPU cpu = new CPU();
+			cpu.loadProgram(programLines);
 
 			boolean nextStep = true;
 			while (nextStep) {
 				if (debug)
-					printRG(cpu1); // For testing purpose
-				nextStep = cpu1.oneStep();
+					printRG(cpu); // For testing purpose
+				nextStep = cpu.oneStep();
 			}
+			int[] reg = cpu.getReg();
+			for (int i = 0; i < reg.length; i++)
+				System.out.println("x" + i + ": " + "0x%08X",  reg[i]);
+			
 			if (debug)
-				System.out.println("Exit code was: " + cpu1.getExit());
+				System.out.println("Exit code was: " + cpu.getExit());
 
 			System.out.println("Do you want to run another program? (Y/n):");
 			if (getScannerString(consoleReader).toLowerCase().equals("n")) {
