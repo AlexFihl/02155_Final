@@ -8,24 +8,60 @@ import java.util.Scanner;
 
 public class RISCV_Simulator {
 
+	static boolean debug;;
+
 	public static void main(String[] args) {
 
-		System.out.println("Welcome to an RISC-V simulator \nMake by Alex and Anders");
-		int[] programLines = getTheProgramFromAFile();
+		Scanner consoleReader = new Scanner(System.in);
 
-		CPU cpu1 = new CPU();
-		cpu1.loadProgram(programLines);
+		debug = false;
 
-		boolean nextStep = true;
-		while (nextStep) {
-			printRG(cpu1); // For testing purpose
-			nextStep = cpu1.oneStep();
+		System.out.println("Welcome to an RISC-V simulator \n" + "Make by Alex and Anders");
+		while (true) {
+			System.out.print("1: Run a program\n" + "2: Debuging\n" + "3: Exit \n");
+			int number = getScannerInt(consoleReader);
+			if (number == 1)
+				runProgram(consoleReader);
+			else if (number == 2)
+				debug = !debug;
+			else
+				break;
 		}
-		System.out.println("Exit code was: " + cpu1.getExit());
+		System.out.println("Thank you for using the simulartor");
 	}
 
-	private static int[] getTheProgramFromAFile() {
-		byte[] programFile = getPrgramFile();
+	private static void runProgram(Scanner consoleReader) {
+
+		while (true) {
+			int[] programLines = getTheProgramFromAFile(consoleReader);
+			CPU cpu = new CPU();
+			cpu.loadProgram(programLines);
+
+			boolean nextStep = true;
+			while (nextStep) {
+				if (debug)
+					printRG(cpu); // For testing purpose
+				nextStep = cpu.oneStep();
+			}
+			
+			System.out.println("The content of the registers was:\n");
+			int[] reg = cpu.getReg();
+			for (int i = 0; i < reg.length; i++)
+				System.out.println("x" + String.format("%02d", i) + ": " + String.format("0x%08X",  reg[i]));
+			System.out.println();
+			
+			if (debug)
+				System.out.println("Exit code was: " + cpu.getExit());
+
+			System.out.println("Do you want to run another program? (Y/n):");
+			if (getScannerString(consoleReader).toLowerCase().equals("n")) {
+				break;
+			}
+		}
+	}
+
+	private static int[] getTheProgramFromAFile(Scanner consoleReader) {
+		byte[] programFile = getPrgramFile(consoleReader);
 		int[] programLines = new int[programFile.length / 4];
 		for (int i = 0; i < programFile.length / 4; i++)
 			for (int x = 0; x <= 3; x++)
@@ -34,8 +70,7 @@ public class RISCV_Simulator {
 		return programLines;
 	}
 
-	private static byte[] getPrgramFile() {
-		Scanner consoleReader = new Scanner(System.in);
+	private static byte[] getPrgramFile(Scanner consoleReader) {
 
 		System.out.println("Which prgram do you want to load, type in the wanted number");
 		File folder = new File("test");
@@ -68,21 +103,18 @@ public class RISCV_Simulator {
 		System.out.println();
 	}
 
-	private static int[] readProgram() {
-		int temp[] = { 0x00200093, // addi x1 x0 2
-				0x00300113, // addi x2 x0 3
-				0x002081b3, // add x3 x1 x2
-		};
-		return temp;
-	}
-
-	private static int getScannerInt(Scanner reader) {
+	private static int getScannerInt(Scanner consoleReader) {
 		while (true) {
 			try {
-				return Integer.parseInt(reader.next());
+				return Integer.parseInt(getScannerString(consoleReader));
 			} catch (NumberFormatException e) {
 				System.out.println("The input shall be only numbers and no letters");
 			}
 		}
+	}
+
+	private static String getScannerString(Scanner consoleReader) {
+		String text = consoleReader.nextLine();
+		return text;
 	}
 }
