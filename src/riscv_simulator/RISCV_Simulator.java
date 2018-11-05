@@ -18,8 +18,8 @@ public class RISCV_Simulator {
 		
 		int x = 0;
 		while(x == 0) {
-			x = cpu1.oneStep();
 			printRG(cpu1); // For testing purpose
+			x = cpu1.oneStep();
 		}
 		System.out.println("Exit code was: " + x);
 		
@@ -65,7 +65,7 @@ public class RISCV_Simulator {
 
 	private static void printRG(CPU cpu1) {
 		for (int i = 0; i < cpu1.getReg().length; ++i) {
-			System.out.print(cpu1.getReg()[i] + " ");
+			System.out.print(String.format("0x%08X", cpu1.getReg()[i]) + " ");
 		}
 		System.out.println();
 	}
