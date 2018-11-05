@@ -28,7 +28,6 @@ public class CPU {
 		rs1 = (instruction >> 15) & 0x1f;
 		rs2 = (instruction >> 20) & 0x1f;
 		funt7 = instruction >> 25;
-		imm = instruction >> 20;
 
 		switch (opcode) {
 		case 0x13:
@@ -54,7 +53,7 @@ public class CPU {
 
 	private void opCode0x73() {
 		switch (funt3) {
-		case 0x00: // ecall
+		case 0x0: // ecall
 			break;
 		default:
 			System.out.println("funt3 " + String.format("0x%01X", funt3) + " not yet implemented");
@@ -63,7 +62,37 @@ public class CPU {
 	}
 
 	private void opCode0x13() {
-		reg[rd] = reg[rs1] + imm;
+		imm = instruction >>> 20;
+		switch (funt3) {
+		case 0x0: //Addi
+			reg[rd] = reg[rs1] + imm;
+			break;
+		case 0x1: //SLLI
+			reg[rd] = reg[rs1] << (imm & 0x1f);
+			break;
+		case 0x2: // SLTI
+			reg[rd] = reg[rs1] < imm ? 1 : 0;
+			break;
+		case 0x3: // SLTIU
+			reg[rd] = reg[rs1] < imm ? 1 : 0;
+			break;
+		case 0x4: // XORI
+			reg[rd] = reg[rs1] ^ imm;
+			break;
+		case 0x5:
+			if(imm >>> 7 == 0x00) //SRLI
+				reg[rd] = reg[rs1] >>> (reg[rs2] & 0x1f);
+			else // SRAI
+				reg[rd] = reg[rs1] >> (reg[rs2] & 0x1f);
+			break;
+		case 0x6: // ORI
+			reg[rd] = reg[rs1] | imm;
+			break;
+		case 0x7: // ANDI
+			reg[rd] = reg[rs1] & imm;
+			break;
+		}
+		
 	}
 
 	private void opCode0x33() {
