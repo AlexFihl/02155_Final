@@ -15,7 +15,6 @@ public class RISCV_Simulator {
 
 		CPU cpu1 = new CPU();
 		cpu1.loadProgram(programLines);
-		//cpu1.loadProgram(readProgram());
 		
 		int x = 0;
 		while(x == 0) {
