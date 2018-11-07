@@ -42,6 +42,9 @@ public class CPU {
 		case 0x37:
 			reg[rd] = instruction & (0xfffff << 12);
 			break;
+		case 0x63:
+			opCode0x63();
+			break;
 		case 0x73:
 			opCode0x73();
 			break;
@@ -56,6 +59,13 @@ public class CPU {
 			return false;
 		else
 			return true;
+	}
+
+	private void opCode0x63() {
+		imm = 	((instruction >> 8) & 0x0f << 1) +
+				((instruction >> 25) & 0x3f << 6) +
+				((instruction >> 7) & 0x01 << 11) +
+				((instruction >> 31) & 0x01 << 12);
 	}
 
 	private void opCode0x73() {
