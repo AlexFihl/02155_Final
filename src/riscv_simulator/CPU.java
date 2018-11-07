@@ -63,10 +63,7 @@ public class CPU {
 
 	private void opCode0x63() {
 		imm = (((instruction >> 8) & 0x0f) << 1) + (((instruction >> 25) & 0x3f) << 5)
-				+ (((instruction >> 7) & 0x01) << 11) + (((instruction >> 31) & 0x01) << 31);
-		if (((instruction >> 31) & 0x01) == 1)
-			imm |= 0xfffff << 12;
-		System.out.println(imm);
+				+ (((instruction >> 7) & 0x01) << 11) + ((instruction >> 31) << 12);
 	}
 
 	private void printOpCode() {
