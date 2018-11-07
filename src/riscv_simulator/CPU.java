@@ -56,7 +56,7 @@ public class CPU {
 			pc++;
 		else
 			jump = false;
-		
+
 		if (pc >= program.length || exit != -1)
 			return false;
 		else
@@ -67,35 +67,35 @@ public class CPU {
 		imm = (((instruction >> 8) & 0x0f) << 1) + (((instruction >> 25) & 0x3f) << 5)
 				+ (((instruction >> 7) & 0x01) << 11) + ((instruction >> 31) << 12);
 		switch (funt3) {
-		case 0x0: //BEQ
+		case 0x0: // BEQ
 			if (reg[rs1] == reg[rs2])
 				jumpPcByImm();
 			break;
-		case 0x1: //BNE
+		case 0x1: // BNE
 			if (reg[rs1] != reg[rs2])
 				jumpPcByImm();
 			break;
-		case 0x4: //BLT
+		case 0x4: // BLT
 			if (reg[rs1] < reg[rs2])
 				jumpPcByImm();
 			break;
-		case 0x5: //BGE
+		case 0x5: // BGE
 			if (reg[rs1] >= reg[rs2])
 				jumpPcByImm();
 			break;
-		case 0x6: //BLTU
-			if (reg[rs1] < reg[rs2])
+		case 0x6: // BLTU
+			if ((reg[rs1] < reg[rs2]) ^ (reg[rs1] < 0) ^ (reg[rs2] < 0))
 				jumpPcByImm();
 			break;
-		case 0x7: //BGEU
-			if (reg[rs1] >= reg[rs2])
+		case 0x7: // BGEU
+			if (!((reg[rs1] < reg[rs2]) ^ (reg[rs1] < 0) ^ (reg[rs2] < 0)))
 				jumpPcByImm();
 			break;
 		}
 	}
 
 	private void jumpPcByImm() {
-		pc += (imm/4);
+		pc += (imm / 4);
 		jump = true;
 	}
 
@@ -147,7 +147,7 @@ public class CPU {
 			reg[rd] = reg[rs1] < imm ? 1 : 0;
 			break;
 		case 0x3: // SLTIU
-			reg[rd] = reg[rs1] < imm ? 1 : 0;
+			reg[rd] = ((reg[rs1] < imm) ^ (reg[rs1] < 0) ^ (imm < 0)) ? 1 : 0;
 			break;
 		case 0x4: // XORI
 			reg[rd] = reg[rs1] ^ imm;
@@ -183,7 +183,7 @@ public class CPU {
 			reg[rd] = reg[rs1] < reg[rs2] ? 1 : 0;
 			break;
 		case 0x3: // sltu
-			reg[rd] = reg[rs1] < reg[rs2] ? 1 : 0;
+			reg[rd] = ((reg[rs1] < reg[rs2]) ^ (reg[rs1] < 0) ^ (reg[rs2] < 0)) ? 1 : 0;
 			break;
 		case 0x4:// xor
 			reg[rd] = reg[rs1] ^ reg[rs2];
