@@ -17,7 +17,7 @@ public class CPU {
 
 	private int exit;
 	private boolean jump;
-	
+
 	public CPU() {
 		exit = -1;
 		jump = false;
@@ -49,10 +49,10 @@ public class CPU {
 			opCode0x73();
 			break;
 		default:
-			System.out.println("Opcode " + String.format("0x%01X", opcode) + " not yet implemented");
+			printOpCode();
 			break;
 		}
-		
+
 		if (!jump)
 			pc++;
 		if (pc >= program.length || exit != -1)
@@ -66,7 +66,11 @@ public class CPU {
 				((instruction >> 25) & 0x3f << 6) +
 				((instruction >> 7) & 0x01 << 11) +
 				((instruction >> 31) & 0x01 << 12);
-	}
+}
+	private void printOpCode() {
+		System.out.println("PC: " + pc + ". Opcode " + String.format("0x%01X", opcode) + " not yet implemented");
+}
+
 
 	private void opCode0x73() {
 		switch (funt3) {
@@ -90,9 +94,13 @@ public class CPU {
 			}
 			break;
 		default:
-			System.out.println("funt3 " + String.format("0x%01X", funt3) + " not yet implemented");
+			printFunct3();
 			break;
 		}
+	}
+
+	private void printFunct3() {
+		System.out.println("PC: " + pc + ". funt3 " + String.format("0x%01X", funt3) + " not yet implemented");
 	}
 
 	private void opCode0x13() {
@@ -161,7 +169,7 @@ public class CPU {
 		case 0x7: // and
 			reg[rd] = reg[rs1] & reg[rs2];
 		default:
-			System.out.println("funt3 " + String.format("0x%01X", funt3) + " not yet implemented");
+			printFunct3();
 			break;
 		}
 	}
@@ -173,7 +181,7 @@ public class CPU {
 	public int[] getReg() {
 		return reg;
 	}
-	
+
 	public int getExit() {
 		return exit;
 	}
