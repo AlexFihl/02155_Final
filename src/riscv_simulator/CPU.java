@@ -62,15 +62,13 @@ public class CPU {
 	}
 
 	private void opCode0x63() {
-		imm = 	((instruction >> 8) & 0x0f << 1) +
-				((instruction >> 25) & 0x3f << 6) +
-				((instruction >> 7) & 0x01 << 11) +
-				((instruction >> 31) & 0x01 << 12);
-}
+		imm = (((instruction >> 8) & 0x0f) << 1) + (((instruction >> 25) & 0x3f) << 5)
+				+ (((instruction >> 7) & 0x01) << 11) + (((instruction >> 31) & 0x01) << 12);
+	}
+
 	private void printOpCode() {
 		System.out.println("PC: " + pc + ". Opcode " + String.format("0x%01X", opcode) + " not yet implemented");
-}
-
+	}
 
 	private void opCode0x73() {
 		switch (funt3) {
@@ -86,7 +84,7 @@ public class CPU {
 			case 0x0a:
 				exit = reg[10];
 				break;
-			case 0x0b://Print out ASCII signed
+			case 0x0b:// Print out ASCII signed
 				break;
 			case 0x11:
 				exit = reg[10];
