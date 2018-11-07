@@ -44,7 +44,7 @@ public class CPU {
 			opCode0x73();
 			break;
 		default:
-			System.out.println("Opcode " + String.format("0x%01X", opcode) + " not yet implemented");
+			printOpCode();
 			break;
 		}
 
@@ -53,6 +53,10 @@ public class CPU {
 			return false;
 		else
 			return true;
+	}
+
+	private void printOpCode() {
+		System.out.println("PC: " + pc + ". Opcode " + String.format("0x%01X", opcode) + " not yet implemented");
 	}
 
 	private void opCode0x73() {
@@ -77,9 +81,13 @@ public class CPU {
 			}
 			break;
 		default:
-			System.out.println("funt3 " + String.format("0x%01X", funt3) + " not yet implemented");
+			printFunct3();
 			break;
 		}
+	}
+
+	private void printFunct3() {
+		System.out.println("PC: " + pc + ". funt3 " + String.format("0x%01X", funt3) + " not yet implemented");
 	}
 
 	private void opCode0x13() {
@@ -148,7 +156,7 @@ public class CPU {
 		case 0x7: // and
 			reg[rd] = reg[rs1] & reg[rs2];
 		default:
-			System.out.println("funt3 " + String.format("0x%01X", funt3) + " not yet implemented");
+			printFunct3();
 			break;
 		}
 	}
