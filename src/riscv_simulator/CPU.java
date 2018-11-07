@@ -153,10 +153,10 @@ public class CPU {
 			reg[rd] = reg[rs1] ^ imm;
 			break;
 		case 0x5:
-			if (imm >>> 7 == 0x00) // SRLI
-				reg[rd] = reg[rs1] >>> (reg[rs2] & 0x1f);
+			if ((imm >>> 7) == 0x00) // SRLI
+				reg[rd] = reg[rs1] >>> (imm & 0x1f);
 			else // SRAI
-				reg[rd] = reg[rs1] >> (reg[rs2] & 0x1f);
+				reg[rd] = reg[rs1] >> (imm & 0x1f);
 			break;
 		case 0x6: // ORI
 			reg[rd] = reg[rs1] | imm;
