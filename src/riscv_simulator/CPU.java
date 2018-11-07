@@ -52,9 +52,11 @@ public class CPU {
 			printOpCode();
 			break;
 		}
-
 		if (!jump)
 			pc++;
+		else
+			jump = false;
+		
 		if (pc >= program.length || exit != -1)
 			return false;
 		else
@@ -64,6 +66,37 @@ public class CPU {
 	private void opCode0x63() {
 		imm = (((instruction >> 8) & 0x0f) << 1) + (((instruction >> 25) & 0x3f) << 5)
 				+ (((instruction >> 7) & 0x01) << 11) + ((instruction >> 31) << 12);
+		switch (funt3) {
+		case 0x0: //BEQ
+			if (reg[rs1] == reg[rs2])
+				jumpPcByImm();
+			break;
+		case 0x1: //BNE
+			if (reg[rs1] != reg[rs2])
+				jumpPcByImm();
+			break;
+		case 0x4: //BLT
+			if (reg[rs1] < reg[rs2])
+				jumpPcByImm();
+			break;
+		case 0x5: //BGE
+			if (reg[rs1] >= reg[rs2])
+				jumpPcByImm();
+			break;
+		case 0x6: //BLTU
+			if (reg[rs1] < reg[rs2])
+				jumpPcByImm();
+			break;
+		case 0x7: //BGEU
+			if (reg[rs1] >= reg[rs2])
+				jumpPcByImm();
+			break;
+		}
+	}
+
+	private void jumpPcByImm() {
+		pc += (imm/4);
+		jump = true;
 	}
 
 	private void printOpCode() {
