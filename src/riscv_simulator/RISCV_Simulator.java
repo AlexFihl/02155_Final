@@ -13,7 +13,6 @@ public class RISCV_Simulator {
 	public static void main(String[] args) {
 
 		Scanner consoleReader = new Scanner(System.in);
-
 		debug = false;
 
 		System.out.println("Welcome to an RISC-V simulator \n" + "Make by Alex and Anders");
@@ -97,6 +96,7 @@ public class RISCV_Simulator {
 	}
 
 	private static void printRG(CPU cpu1) {
+		System.out.print("PC: " + cpu1.getPC() + " ");
 		for (int i = 0; i < cpu1.getReg().length; ++i) {
 			System.out.print(String.format("0x%08X", cpu1.getReg()[i]) + " ");
 		}

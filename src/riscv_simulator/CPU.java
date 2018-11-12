@@ -216,4 +216,8 @@ public class CPU {
 	public int getExit() {
 		return exit;
 	}
+	
+	public int getPC() {
+		return pc;
+	}
 }
