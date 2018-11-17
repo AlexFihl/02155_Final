@@ -35,12 +35,12 @@ public class RISCV_Simulator {
 			int[] programLines = getTheProgramFromAFile(consoleReader);
 			CPU cpu = new CPU();
 			cpu.loadProgram(programLines);
-
+			
 			boolean nextStep = true;
 			while (nextStep) {
+				nextStep = cpu.oneStep();
 				if (debug)
 					printRG(cpu); // For testing purpose
-				nextStep = cpu.oneStep();
 			}
 			
 			System.out.println("The content of the registers was:\n");
@@ -96,7 +96,7 @@ public class RISCV_Simulator {
 	}
 
 	private static void printRG(CPU cpu1) {
-		System.out.print("PC: " + cpu1.getPC() + " ");
+		System.out.print("After PC: " + (cpu1.getPC()-1) + " ");
 		for (int i = 0; i < cpu1.getReg().length; ++i) {
 			System.out.print(String.format("0x%08X", cpu1.getReg()[i]) + " ");
 		}

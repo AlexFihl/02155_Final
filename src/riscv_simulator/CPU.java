@@ -4,6 +4,7 @@ public class CPU {
 
 	private int pc;
 	private int reg[] = new int[32];
+	private int memory[] = new int[0xffff];
 	private int program[];
 
 	private int instruction;
@@ -21,6 +22,7 @@ public class CPU {
 	public CPU() {
 		exit = -1;
 		jump = false;
+		reg[2] = memory.length - 1;
 	}
 
 	public boolean oneStep() {
@@ -31,8 +33,11 @@ public class CPU {
 		rs1 = (instruction >> 15) & 0x1f;
 		rs2 = (instruction >> 20) & 0x1f;
 		funt7 = (instruction >> 25) & 0x7f;
-
+		
 		switch (opcode) {
+		case 0x03:
+			opCode0x03();
+			break;
 		case 0x13:
 			opCode0x13();
 			break;
@@ -61,6 +66,27 @@ public class CPU {
 			return false;
 		else
 			return true;
+	}
+	
+	private void opCode0x03() {
+		imm = instruction >> 20;
+		switch(funt3) {
+		case 0x0: //LB
+			reg[rd] = (memory[rs1 << imm] & 0x00ff) + (memory[rs1 << imm] >> 32);
+			break;
+		case 0x1: //LH
+			reg[rd] = (memory[rs1 << imm] & 0xffff) + (memory[rs1 << imm] >> 32);
+			break;
+		case 0x2: //LW
+			reg[rd] = memory[rs1 << imm];
+			break;
+		case 0x3: //LBU
+			reg[rd] = memory[rs1 << imm] & 0x00ff;
+			break;
+		case 0x4: //LHU
+			reg[rd] = memory[rs1 << imm] & 0xffff;
+			break;
+		}
 	}
 
 	private void opCode0x63() {
@@ -136,6 +162,7 @@ public class CPU {
 
 	private void opCode0x13() {
 		imm = instruction >> 20;
+			reg[rd] = 0;
 		switch (funt3) {
 		case 0x0: // Addi
 			reg[rd] = reg[rs1] + imm;
