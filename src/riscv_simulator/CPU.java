@@ -157,14 +157,14 @@ public class CPU {
 		}
 	}
 
-	private void opCode0x67() {
+	private void opCode0x67() { // JALR
 		imm = instruction >> 20;
 		reg[rd] = pc + 1;
 		jump = true;
-		pc += reg[rs1] + imm;
+		pc = reg[rs1] + imm;
 	}
 
-	private void opCode0x6f() {
+	private void opCode0x6f() { // JAL
 		imm = (((instruction >> 21) & 0x3ff) << 1) + ((instruction >> 20) << 11) + (instruction & (0xff << 12))
 				+ ((instruction >> 31) << 20);
 		reg[rd] = pc + 1;
