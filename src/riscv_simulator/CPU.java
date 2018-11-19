@@ -4,7 +4,7 @@ public class CPU {
 
 	private int pc, oldPC;
 	private int reg[] = new int[32];
-	private byte memory[] = new byte[0x07fffff3];
+	private byte memory[] = new byte[0x0ffffff3];
 	private int program[];
 
 	private int instruction;
@@ -85,11 +85,10 @@ public class CPU {
 			break;
 		case 0x1: // LH
 			reg[rd] = memory[reg[rs1] + imm] + (memory[(rs1 << imm) + 1] << 8);
-			reg[rd] = (reg[rd] << 16) >> 16;
 			break;
 		case 0x2: // LW
 			for (int i = 0; i < 4; i++)
-				reg[rd] = memory[(reg[rs1] + imm) + 1] << (8 * (3 - i));
+				reg[rd] = memory[(reg[rs1] + imm) + i] << (8 * i);
 			break;
 		case 0x3: // LBU
 			reg[rd] = memory[reg[rs1] + imm];
@@ -101,23 +100,18 @@ public class CPU {
 	}
 
 	private void opCode0x23() {
-		imm = ((instruction >> 7) & 0x1f) + (((instruction >> 25) & 0x7f) << 5);
+		imm = ((instruction >> 7) & 0x1f) + ((instruction >> 25) << 5);
 		switch (funt3) {
 		case 0x0: // SB
-			memory[reg[rs1] + imm + 1] = 0;
-			memory[reg[rs1] + imm + 2] = 0;
-			memory[reg[rs1] + imm + 3] = 0;
 			memory[reg[rs1] + imm] = (byte) (reg[rs2] & 0xff);
 			break;
 		case 0x1: // SH
-			memory[reg[rs1] + imm + 2] = 0;
-			memory[reg[rs1] + imm + 3] = 0;
 			memory[reg[rs1] + imm] = (byte) (reg[rs2] & 0xff);
 			memory[reg[rs1] + imm + 1] = (byte) ((reg[rs2] >> 8) & 0xff);
 			break;
 		case 0x2: // SW
-			for (int i = 0; i < 3; i++)
-				memory[reg[rs1] + imm + i] = (byte) ((reg[rs2] >> 8 * i) & 0xff);
+			for (int i = 0; i < 4; i++)
+				memory[reg[rs1] + imm + i] = (byte) ((reg[rs2] >> (8 * i)) & 0xff);
 			break;
 		}
 
@@ -160,7 +154,8 @@ public class CPU {
 
 	private void opCode0x67() { // JALR
 		imm = instruction >> 20;
-		reg[rd] = pc + 1;
+		if (rd != 0)
+			reg[rd] = pc + 1;
 		jump = true;
 		pc = (reg[rs1] + imm) / 4;
 	}
@@ -168,7 +163,8 @@ public class CPU {
 	private void opCode0x6f() { // JAL
 		imm = (((instruction >> 21) & 0x3ff) << 1) + (((instruction >> 20) & 0x1) << 11) + (instruction & (0xff << 12))
 				+ ((instruction >> 31) << 20);
-		reg[rd] = pc + 1;
+		if (rd != 0)
+			reg[rd] = pc + 1;
 		jumpPcByImm();
 	}
 
