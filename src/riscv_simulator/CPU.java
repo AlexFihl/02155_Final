@@ -4,7 +4,7 @@ public class CPU {
 
 	private int pc;
 	private int reg[] = new int[32];
-	private int memory[] = new int[0xffff];
+	private byte memory[] = new byte[0xffff];
 	private int program[];
 
 	private int instruction;
@@ -72,19 +72,20 @@ public class CPU {
 		imm = instruction >> 20;
 		switch(funt3) {
 		case 0x0: //LB
-			reg[rd] = (memory[rs1 << imm] & 0x00ff) + (memory[rs1 << imm] >> 32);
-			break;
-		case 0x1: //LH
-			reg[rd] = (memory[rs1 << imm] & 0xffff) + (memory[rs1 << imm] >> 32);
-			break;
-		case 0x2: //LW
 			reg[rd] = memory[rs1 << imm];
 			break;
+		case 0x1: //LH
+			reg[rd] = memory[rs1 << imm] + (memory[(rs1 << imm) + 1] << 8);
+			break;
+		case 0x2: //LW
+			for(int i = 0; i < 4; i++)
+				reg[rd] = (memory[(rs1 << imm) + i] << 8 *(3-i));
+			break;
 		case 0x3: //LBU
-			reg[rd] = memory[rs1 << imm] & 0x00ff;
+			reg[rd] = memory[rs1 << imm];
 			break;
 		case 0x4: //LHU
-			reg[rd] = memory[rs1 << imm] & 0xffff;
+			reg[rd] = memory[rs1 << imm] + (memory[(rs1 << imm) + 1] << 8);
 			break;
 		}
 	}
