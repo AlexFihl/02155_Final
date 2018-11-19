@@ -33,7 +33,7 @@ public class CPU {
 		rs1 = (instruction >> 15) & 0x1f;
 		rs2 = (instruction >> 20) & 0x1f;
 		funt7 = (instruction >> 25) & 0x7f;
-		
+
 		switch (opcode) {
 		case 0x03:
 			opCode0x03();
@@ -47,7 +47,7 @@ public class CPU {
 		case 0x33:
 			opCode0x33();
 			break;
-		case 0x37: //LUI
+		case 0x37: // LUI
 			reg[rd] = instruction & (0xfffff << 12);
 			break;
 		case 0x63:
@@ -70,25 +70,25 @@ public class CPU {
 		else
 			return true;
 	}
-	
+
 	private void opCode0x03() {
 		imm = instruction >> 20;
-		switch(funt3) {
-		case 0x0: //LB
+		switch (funt3) {
+		case 0x0: // LB
 			reg[rd] = memory[reg[rs1] + imm];
 			break;
-		case 0x1: //LH
+		case 0x1: // LH
 			reg[rd] = memory[reg[rs1] + imm] + (memory[(rs1 << imm) + 1] << 8);
 			reg[rd] = (reg[rd] << 16) >> 16;
 			break;
-		case 0x2: //LW
-			for(int i = 0; i < 4; i++)
-				reg[rd] = memory[(reg[rs1] + imm) + 1] << (8 *(3-i));
+		case 0x2: // LW
+			for (int i = 0; i < 4; i++)
+				reg[rd] = memory[(reg[rs1] + imm) + 1] << (8 * (3 - i));
 			break;
-		case 0x3: //LBU
+		case 0x3: // LBU
 			reg[rd] = memory[reg[rs1] + imm];
 			break;
-		case 0x4: //LHU
+		case 0x4: // LHU
 			reg[rd] = memory[reg[rs1] + imm] + (memory[(reg[rs1] << imm) + 1] << 8);
 			break;
 		}
@@ -96,27 +96,27 @@ public class CPU {
 
 	private void opCode0x23() {
 		imm = ((instruction >> 7) & 0x1f) + (((instruction >> 25) & 0x7f) << 5);
-		switch(funt3) {
-		case 0x0: //SB
+		switch (funt3) {
+		case 0x0: // SB
 			memory[reg[rs1] + imm + 1] = 0;
 			memory[reg[rs1] + imm + 2] = 0;
 			memory[reg[rs1] + imm + 3] = 0;
 			memory[reg[rs1] + imm] = (byte) (reg[rs2] & 0xff);
 			break;
-		case 0x1: //SH
+		case 0x1: // SH
 			memory[reg[rs1] + imm + 2] = 0;
 			memory[reg[rs1] + imm + 3] = 0;
 			memory[reg[rs1] + imm] = (byte) (reg[rs2] & 0xff);
 			memory[reg[rs1] + imm + 1] = (byte) ((reg[rs2] >> 8) & 0xff);
 			break;
-		case 0x2: //SW
-			for(int i = 0; i < 3; i++)
+		case 0x2: // SW
+			for (int i = 0; i < 3; i++)
 				memory[reg[rs1] + imm + i] = (byte) ((reg[rs2] >> 8 * i) & 0xff);
 			break;
 		}
-		
+
 	}
-	
+
 	private void opCode0x63() {
 		imm = (((instruction >> 8) & 0x0f) << 1) + (((instruction >> 25) & 0x3f) << 5)
 				+ (((instruction >> 7) & 0x01) << 11) + ((instruction >> 31) << 12);
@@ -190,7 +190,7 @@ public class CPU {
 
 	private void opCode0x13() {
 		imm = instruction >> 20;
-			reg[rd] = 0;
+		reg[rd] = 0;
 		switch (funt3) {
 		case 0x0: // Addi
 			reg[rd] = reg[rs1] + imm;
@@ -271,7 +271,7 @@ public class CPU {
 	public int getExit() {
 		return exit;
 	}
-	
+
 	public int getPC() {
 		return pc;
 	}
