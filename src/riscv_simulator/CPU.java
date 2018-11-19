@@ -4,7 +4,7 @@ public class CPU {
 
 	private int pc;
 	private int reg[] = new int[32];
-	private byte memory[] = new byte[0xfffff];
+	private byte memory[] = new byte[0x07fffff3];
 	private int program[];
 
 	private int instruction;
@@ -33,7 +33,8 @@ public class CPU {
 		rs1 = (instruction >> 15) & 0x1f;
 		rs2 = (instruction >> 20) & 0x1f;
 		funt7 = (instruction >> 25) & 0x7f;
-
+		System.out.println("Opcode is: " + String.format("0x%02X", opcode));
+		System.out.println("Funt3 is: " + String.format("0x%02X", funt3));
 		switch (opcode) {
 		case 0x03:
 			opCode0x03();
@@ -53,6 +54,9 @@ public class CPU {
 		case 0x63:
 			opCode0x63();
 			break;
+		/*case 0x6f:
+			opCode0x6f();
+			break;*/
 		case 0x73:
 			opCode0x73();
 			break;
@@ -146,6 +150,13 @@ public class CPU {
 				jumpPcByImm();
 			break;
 		}
+	}
+	
+	private void opCode0x6f() {
+		imm = (((instruction >> 21) & 0x3ff) << 1) + ((instruction >> 20) << 11) + (instruction & (0xff << 12)) + ((instruction >> 31) << 20);
+		reg[rd] = pc + 1;
+		jump = true;
+		pc += imm;
 	}
 
 	private void jumpPcByImm() {
