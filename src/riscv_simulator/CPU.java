@@ -190,7 +190,6 @@ public class CPU {
 
 	private void opCode0x13() {
 		imm = instruction >> 20;
-		reg[rd] = 0;
 		switch (funt3) {
 		case 0x0: // Addi
 			reg[rd] = reg[rs1] + imm;
