@@ -33,8 +33,6 @@ public class CPU {
 		rs1 = (instruction >> 15) & 0x1f;
 		rs2 = (instruction >> 20) & 0x1f;
 		funt7 = (instruction >> 25) & 0x7f;
-		System.out.println("Opcode is: " + String.format("0x%02X", opcode));
-		System.out.println("Funt3 is: " + String.format("0x%02X", funt3));
 		switch (opcode) {
 		case 0x03:
 			opCode0x03();
