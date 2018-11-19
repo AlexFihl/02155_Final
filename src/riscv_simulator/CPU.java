@@ -54,9 +54,12 @@ public class CPU {
 		case 0x63:
 			opCode0x63();
 			break;
-		/*case 0x6f:
+		case 0x67:
+			opCode0x67();
+			break;
+		case 0x6f:
 			opCode0x6f();
-			break;*/
+			break;
 		case 0x73:
 			opCode0x73();
 			break;
@@ -150,6 +153,13 @@ public class CPU {
 				jumpPcByImm();
 			break;
 		}
+	}
+	
+	private void opCode0x67() {
+		imm = instruction >> 20;
+		reg[rd] = pc + 1;
+		jump = true;
+		pc += reg[rs1] + imm;
 	}
 	
 	private void opCode0x6f() {
