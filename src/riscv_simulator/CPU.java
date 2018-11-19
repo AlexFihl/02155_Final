@@ -22,7 +22,7 @@ public class CPU {
 	public CPU() {
 		exit = -1;
 		jump = false;
-		reg[2] = memory.length - 1;
+		reg[2] = memory.length - 3;
 	}
 
 	public boolean oneStep() {
