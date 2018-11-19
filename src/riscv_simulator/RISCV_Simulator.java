@@ -65,7 +65,6 @@ public class RISCV_Simulator {
 		for (int i = 0; i < programFile.length / 4; i++)
 			for (int x = 0; x <= 3; x++)
 				programLines[i] += (programFile[i * 4 + x] & 0xff) << 8 * x;
-		System.out.println();
 		return programLines;
 	}
 
