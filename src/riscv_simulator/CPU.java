@@ -2,7 +2,7 @@ package riscv_simulator;
 
 public class CPU {
 
-	private int pc;
+	private int pc, oldPC;
 	private int reg[] = new int[32];
 	private byte memory[] = new byte[0x07fffff3];
 	private int program[];
@@ -26,6 +26,7 @@ public class CPU {
 	}
 
 	public boolean oneStep() {
+		oldPC = pc;
 		instruction = program[pc];
 		opcode = instruction & 0x7f;
 		rd = (instruction >> 7) & 0x1f;
@@ -296,5 +297,9 @@ public class CPU {
 
 	public int getPC() {
 		return pc;
+	}
+	
+	public int getOldPC() {
+		return oldPC;
 	}
 }
