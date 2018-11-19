@@ -4,7 +4,7 @@ public class CPU {
 
 	private int pc;
 	private int reg[] = new int[32];
-	private byte memory[] = new byte[0xffff];
+	private byte memory[] = new byte[0xfffff];
 	private int program[];
 
 	private int instruction;
@@ -41,10 +41,13 @@ public class CPU {
 		case 0x13:
 			opCode0x13();
 			break;
+		case 0x23:
+			opCode0x23();
+			break;
 		case 0x33:
 			opCode0x33();
 			break;
-		case 0x37:
+		case 0x37: //LUI
 			reg[rd] = instruction & (0xfffff << 12);
 			break;
 		case 0x63:
@@ -72,24 +75,48 @@ public class CPU {
 		imm = instruction >> 20;
 		switch(funt3) {
 		case 0x0: //LB
-			reg[rd] = memory[rs1 << imm];
+			reg[rd] = memory[reg[rs1] + imm];
 			break;
 		case 0x1: //LH
-			reg[rd] = memory[rs1 << imm] + (memory[(rs1 << imm) + 1] << 8);
+			reg[rd] = memory[reg[rs1] + imm] + (memory[(rs1 << imm) + 1] << 8);
+			reg[rd] = (reg[rd] << 16) >> 16;
 			break;
 		case 0x2: //LW
 			for(int i = 0; i < 4; i++)
-				reg[rd] = (memory[(rs1 << imm) + i] << 8 *(3-i));
+				reg[rd] = memory[(reg[rs1] + imm) + 1] << (8 *(3-i));
 			break;
 		case 0x3: //LBU
-			reg[rd] = memory[rs1 << imm];
+			reg[rd] = memory[reg[rs1] + imm];
 			break;
 		case 0x4: //LHU
-			reg[rd] = memory[rs1 << imm] + (memory[(rs1 << imm) + 1] << 8);
+			reg[rd] = memory[reg[rs1] + imm] + (memory[(reg[rs1] << imm) + 1] << 8);
 			break;
 		}
 	}
 
+	private void opCode0x23() {
+		imm = ((instruction >> 7) & 0x1f) + (((instruction >> 25) & 0x7f) << 5);
+		switch(funt3) {
+		case 0x0: //SB
+			memory[reg[rs1] + imm + 1] = 0;
+			memory[reg[rs1] + imm + 2] = 0;
+			memory[reg[rs1] + imm + 3] = 0;
+			memory[reg[rs1] + imm] = (byte) (reg[rs2] & 0xff);
+			break;
+		case 0x1: //SH
+			memory[reg[rs1] + imm + 2] = 0;
+			memory[reg[rs1] + imm + 3] = 0;
+			memory[reg[rs1] + imm] = (byte) (reg[rs2] & 0xff);
+			memory[reg[rs1] + imm + 1] = (byte) ((reg[rs2] >> 8) & 0xff);
+			break;
+		case 0x2: //SW
+			for(int i = 0; i < 3; i++)
+				memory[reg[rs1] + imm + i] = (byte) ((reg[rs2] >> 8 * i) & 0xff);
+			break;
+		}
+		
+	}
+	
 	private void opCode0x63() {
 		imm = (((instruction >> 8) & 0x0f) << 1) + (((instruction >> 25) & 0x3f) << 5)
 				+ (((instruction >> 7) & 0x01) << 11) + ((instruction >> 31) << 12);
