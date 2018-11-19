@@ -46,8 +46,8 @@ public class CPU {
 		case 0x33:
 			opCode0x33();
 			break;
-		case 0x37: // LUI
-			reg[rd] = instruction & (0xfffff << 12);
+		case 0x37:
+			opCode0x37();
 			break;
 		case 0x63:
 			opCode0x63();
@@ -122,6 +122,10 @@ public class CPU {
 
 	}
 
+	private void opCode0x37() { // LUI
+		reg[rd] = instruction & (0xfffff << 12);
+	}
+
 	private void opCode0x63() {
 		imm = (((instruction >> 8) & 0x0f) << 1) + (((instruction >> 25) & 0x3f) << 5)
 				+ (((instruction >> 7) & 0x01) << 11) + ((instruction >> 31) << 12);
@@ -152,16 +156,17 @@ public class CPU {
 			break;
 		}
 	}
-	
+
 	private void opCode0x67() {
 		imm = instruction >> 20;
 		reg[rd] = pc + 1;
 		jump = true;
 		pc += reg[rs1] + imm;
 	}
-	
+
 	private void opCode0x6f() {
-		imm = (((instruction >> 21) & 0x3ff) << 1) + ((instruction >> 20) << 11) + (instruction & (0xff << 12)) + ((instruction >> 31) << 20);
+		imm = (((instruction >> 21) & 0x3ff) << 1) + ((instruction >> 20) << 11) + (instruction & (0xff << 12))
+				+ ((instruction >> 31) << 20);
 		reg[rd] = pc + 1;
 		jump = true;
 		pc += imm;
