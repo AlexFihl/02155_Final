@@ -161,15 +161,14 @@ public class CPU {
 		imm = instruction >> 20;
 		reg[rd] = pc + 1;
 		jump = true;
-		pc = reg[rs1] + imm;
+		pc = (reg[rs1] + imm) / 4;
 	}
 
 	private void opCode0x6f() { // JAL
-		imm = (((instruction >> 21) & 0x3ff) << 1) + ((instruction >> 20) << 11) + (instruction & (0xff << 12))
+		imm = (((instruction >> 21) & 0x3ff) << 1) + (((instruction >> 20) & 0x1) << 11) + (instruction & (0xff << 12))
 				+ ((instruction >> 31) << 20);
 		reg[rd] = pc + 1;
-		jump = true;
-		pc += imm;
+		jumpPcByImm();
 	}
 
 	private void jumpPcByImm() {
