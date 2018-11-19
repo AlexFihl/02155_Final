@@ -79,22 +79,27 @@ public class CPU {
 
 	private void opCode0x03() {
 		imm = instruction >> 20;
+		reg[rd] = 0;
 		switch (funt3) {
 		case 0x0: // LB
 			reg[rd] = memory[reg[rs1] + imm];
+			if (((reg[rd] >> 8) & 0x1) == 1)
+				reg[rd] |= 0xffffff00;
 			break;
 		case 0x1: // LH
-			reg[rd] = memory[reg[rs1] + imm] + (memory[(rs1 << imm) + 1] << 8);
+			reg[rd] = memory[reg[rs1] + imm] + (memory[(reg[rs1] + imm) + 1] << 8);
+			if (((reg[rd] >> 16) & 0x1) == 1)
+				reg[rd] |= 0xffff0000;
 			break;
 		case 0x2: // LW
 			for (int i = 0; i < 4; i++)
-				reg[rd] = memory[(reg[rs1] + imm) + i] << (8 * i);
+				reg[rd] += (memory[(reg[rs1] + imm) + i] << (8 * i));
 			break;
 		case 0x3: // LBU
 			reg[rd] = memory[reg[rs1] + imm];
 			break;
 		case 0x4: // LHU
-			reg[rd] = memory[reg[rs1] + imm] + (memory[(reg[rs1] << imm) + 1] << 8);
+			reg[rd] = memory[reg[rs1] + imm] + (memory[(reg[rs1] + imm) + 1] << 8);
 			break;
 		}
 	}
