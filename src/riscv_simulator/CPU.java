@@ -95,18 +95,19 @@ public class CPU {
 			for (int i = 0; i < 4; i++)
 				reg[rd] += ((memory[(reg[rs1] + imm) + i] & 0xff) << (8 * i));
 			break;
-		case 0x3: // LBU
+		case 0x4: // LBU
 			reg[rd] = memory[reg[rs1] + imm] & 0xff;
 			break;
-		case 0x4: // LHU
-			reg[rd] = (memory[reg[rs1] + imm] & 0xff) + ((memory[(reg[rs1] + imm) + 1] & 0xff) << 8);
+		case 0x5: // LHU
+			reg[rd] = (memory[reg[rs1] + imm] & 0xff);
+			reg[rd] += (memory[(reg[rs1] + imm) + 1] & 0xff) << 8;
 			break;
 		}
 	}
 
 	private void opCode0x23() {
 		imm = ((instruction >> 7) & 0x1f) + ((instruction >> 25) << 5);
-		System.out.println(pc + " " + counter + " " + imm + " " + reg[rs1] + " " + rs1);
+//		System.out.println(pc + " " + counter + " " + imm + " " + reg[rs1] + " " + rs1);
 		switch (funt3) {
 		case 0x0: // SB
 			memory[reg[rs1] + imm] = (byte) (reg[rs2] & 0xff);
