@@ -95,7 +95,7 @@ public class RISCV_Simulator {
 	}
 
 	private static void printRG(CPU cpu1) {
-		System.out.print("After PC: " + cpu1.getOldPC() + " ");
+		System.out.print("After PC: " + cpu1.getOldPC()/4 + " ");
 		for (int i = 0; i < cpu1.getReg().length; ++i) {
 			System.out.print(String.format("0x%08X", cpu1.getReg()[i]) + " ");
 		}

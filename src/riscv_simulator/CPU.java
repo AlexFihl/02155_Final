@@ -73,7 +73,6 @@ public class CPU {
 			pc += 4;
 		else
 			jump = false;
-
 		if (pc/4 >= program.length || exit != -1)
 			return false;
 		else
@@ -107,7 +106,6 @@ public class CPU {
 
 	private void opCode0x23() {
 		imm = ((instruction >> 7) & 0x1f) + ((instruction >> 25) << 5);
-//		System.out.println(pc + " " + counter + " " + imm + " " + reg[rs1] + " " + rs1);
 		switch (funt3) {
 		case 0x0: // SB
 			memory[reg[rs1] + imm] = (byte) (reg[rs2] & 0xff);
