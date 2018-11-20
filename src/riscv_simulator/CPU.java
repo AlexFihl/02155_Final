@@ -93,13 +93,15 @@ public class CPU {
 			break;
 		case 0x2: // LW
 			for (int i = 0; i < 4; i++)
-				reg[rd] += (memory[(reg[rs1] + imm) + i] << (8 * i));
+				reg[rd] += ((memory[(reg[rs1] + imm) + i] & 0xff) << (8 * i));
 			break;
 		case 0x3: // LBU
 			reg[rd] = memory[reg[rs1] + imm];
+			reg[rd] = reg[rd] & 0x000000ff;
 			break;
 		case 0x4: // LHU
 			reg[rd] = memory[reg[rs1] + imm] + (memory[(reg[rs1] + imm) + 1] << 8);
+			reg[rd] = reg[rd] & 0x0000ffff;
 			break;
 		}
 	}
