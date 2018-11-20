@@ -30,7 +30,7 @@ public class CPU {
 	public boolean oneStep() {
 		counter++;
 		oldPC = pc;
-		instruction = program[pc];
+		instruction = program[pc/4];
 		opcode = instruction & 0x7f;
 		rd = (instruction >> 7) & 0x1f;
 		funt3 = (instruction >> 12) & 0x7;
@@ -70,11 +70,11 @@ public class CPU {
 			break;
 		}
 		if (!jump)
-			pc++;
+			pc += 4;
 		else
 			jump = false;
 
-		if (pc >= program.length || exit != -1)
+		if (pc/4 >= program.length || exit != -1)
 			return false;
 		else
 			return true;
@@ -162,21 +162,21 @@ public class CPU {
 	private void opCode0x67() { // JALR
 		imm = instruction >> 20;
 		if (rd != 0)
-			reg[rd] = pc + 1;
+			reg[rd] = pc + 4;
 		jump = true;
-		pc = (reg[rs1] + imm) / 4;
+		pc = reg[rs1] + imm;
 	}
 
 	private void opCode0x6f() { // JAL
 		imm = (((instruction >> 21) & 0x3ff) << 1) + (((instruction >> 20) & 0x1) << 11) + (instruction & (0xff << 12))
 				+ ((instruction >> 31) << 20);
 		if (rd != 0)
-			reg[rd] = pc + 1;
+			reg[rd] = pc + 4;
 		jumpPcByImm();
 	}
 
 	private void jumpPcByImm() {
-		pc += (imm / 4);
+		pc += imm;
 		jump = true;
 	}
 
