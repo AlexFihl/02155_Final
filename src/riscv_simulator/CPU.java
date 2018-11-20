@@ -19,6 +19,8 @@ public class CPU {
 	private int exit;
 	private boolean jump;
 
+	private int counter;
+
 	public CPU() {
 		exit = -1;
 		jump = false;
@@ -26,6 +28,7 @@ public class CPU {
 	}
 
 	public boolean oneStep() {
+		counter++;
 		oldPC = pc;
 		instruction = program[pc];
 		opcode = instruction & 0x7f;
@@ -83,31 +86,27 @@ public class CPU {
 		switch (funt3) {
 		case 0x0: // LB
 			reg[rd] = memory[reg[rs1] + imm];
-			if (((reg[rd] >> 8) & 0x1) == 1)
-				reg[rd] |= 0xffffff00;
 			break;
 		case 0x1: // LH
-			reg[rd] = memory[reg[rs1] + imm] + (memory[(reg[rs1] + imm) + 1] << 8);
-			if (((reg[rd] >> 16) & 0x1) == 1)
-				reg[rd] |= 0xffff0000;
+			reg[rd] = memory[reg[rs1] + imm] & 0xff; 
+			reg[rd] += (memory[(reg[rs1] + imm) + 1]) << 8;
 			break;
 		case 0x2: // LW
 			for (int i = 0; i < 4; i++)
 				reg[rd] += ((memory[(reg[rs1] + imm) + i] & 0xff) << (8 * i));
 			break;
 		case 0x3: // LBU
-			reg[rd] = memory[reg[rs1] + imm];
-			reg[rd] = reg[rd] & 0x000000ff;
+			reg[rd] = memory[reg[rs1] + imm] & 0xff;
 			break;
 		case 0x4: // LHU
-			reg[rd] = memory[reg[rs1] + imm] + (memory[(reg[rs1] + imm) + 1] << 8);
-			reg[rd] = reg[rd] & 0x0000ffff;
+			reg[rd] = (memory[reg[rs1] + imm] & 0xff) + ((memory[(reg[rs1] + imm) + 1] & 0xff) << 8);
 			break;
 		}
 	}
 
 	private void opCode0x23() {
 		imm = ((instruction >> 7) & 0x1f) + ((instruction >> 25) << 5);
+		System.out.println(pc + " " + counter + " " + imm + " " + reg[rs1] + " " + rs1);
 		switch (funt3) {
 		case 0x0: // SB
 			memory[reg[rs1] + imm] = (byte) (reg[rs2] & 0xff);
@@ -301,7 +300,7 @@ public class CPU {
 	public int getPC() {
 		return pc;
 	}
-	
+
 	public int getOldPC() {
 		return oldPC;
 	}
