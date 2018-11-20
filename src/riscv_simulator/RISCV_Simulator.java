@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Scanner;
 
 public class RISCV_Simulator {
@@ -42,20 +44,26 @@ public class RISCV_Simulator {
 					printRG(cpu); // For testing purpose
 				nextStep = cpu.oneStep();
 			}
-			
+
 			System.out.println("The content of the registers was:\n");
 			int[] reg = cpu.getReg();
 			for (int i = 0; i < reg.length; i++)
-				System.out.println("x" + String.format("%02d", i) + ": " + String.format("0x%08X",  reg[i]));
+				System.out.println("x" + String.format("%02d", i) + ": " + String.format("0x%08X", reg[i]));
 			System.out.println();
-			
+
 			if (debug)
 				System.out.println("Exit code was: " + cpu.getExit());
 
-			System.out.println("Do you want to run another program? (Y/n):");
-			if (getScannerString(consoleReader).toLowerCase().equals("n")) {
-				break;
+			System.out.println("Do you want to save the registers to a file? (Y/n):");
+			if (!getScannerString(consoleReader).toLowerCase().equals("n")) {
+				System.out.println("Write name of the output file: ");
+				String nameOfOutputFile = getScannerString(consoleReader);
+				printRegistersToFile(cpu, nameOfOutputFile);
 			}
+
+			System.out.println("Do you want to run another program? (Y/n):");
+			if (getScannerString(consoleReader).toLowerCase().equals("n"))
+				break;
 		}
 	}
 
@@ -114,7 +122,26 @@ public class RISCV_Simulator {
 	}
 
 	private static String getScannerString(Scanner consoleReader) {
-		String text = consoleReader.nextLine();
-		return text;
+		while (true) {
+			String text = consoleReader.nextLine();
+			if(text.length() != 0)
+				return text;
+			else
+				System.out.println("Please input a string");
+		}
+	}
+
+	private static void printRegistersToFile(CPU cpu, String nameOfOutputFile) {
+		byte data[] = new byte[cpu.getReg().length * 4];
+		for (int i = 0; i < 32; i++)
+			for (int x = 0; x < 4; x++)
+				data[i + x] = (byte) ((cpu.getReg()[i] >> 8 * x) & 0xff);
+		Path file = Paths.get(nameOfOutputFile + ".bin");
+		try {
+			Files.write(file, data);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
