@@ -134,13 +134,12 @@ public class RISCV_Simulator {
 		byte data[] = new byte[cpu.getReg().length * 4];
 		for (int i = 0; i < 32; i++)
 			for (int x = 0; x < 4; x++)
-				data[i + x] = (byte) ((cpu.getReg()[i] >> 8 * x) & 0xff);
+				data[i*4 + x] = (byte) ((cpu.getReg()[i] >> 8 * x) & 0xff);
 		Path file = Paths.get(nameOfOutputFile + ".bin");
 		try {
 			Files.write(file, data);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("File was not saved");
 		}
 	}
 }
