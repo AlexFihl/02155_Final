@@ -19,7 +19,6 @@ public class CPU {
 	private int exit;
 	private boolean jump;
 
-	private int counter;
 
 	public CPU() {
 		exit = -1;
@@ -28,7 +27,6 @@ public class CPU {
 	}
 
 	public boolean oneStep() {
-		counter++;
 		oldPC = pc;
 		instruction = program[pc/4];
 		opcode = instruction & 0x7f;
