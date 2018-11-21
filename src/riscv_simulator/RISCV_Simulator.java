@@ -135,7 +135,7 @@ public class RISCV_Simulator {
 		for (int i = 0; i < 32; i++)
 			for (int x = 0; x < 4; x++)
 				data[i*4 + x] = (byte) ((cpu.getReg()[i] >> 8 * x) & 0xff);
-		Path file = Paths.get(nameOfOutputFile + ".bin");
+		Path file = Paths.get(nameOfOutputFile + ".res");
 		try {
 			Files.write(file, data);
 		} catch (IOException e) {
