@@ -42,6 +42,9 @@ public class CPU {
 		case 0x13:
 			opCode0x13();
 			break;
+		case 0x17:
+			opCode0x17();
+			break;
 		case 0x23:
 			opCode0x23();
 			break;
@@ -99,7 +102,15 @@ public class CPU {
 			reg[rd] = (memory[reg[rs1] + imm] & 0xff);
 			reg[rd] += (memory[(reg[rs1] + imm) + 1] & 0xff) << 8;
 			break;
+		default:
+			printFunct3();
+			break;
 		}
+	}
+	
+	private void opCode0x17() { // auipc
+		imm = instruction >> 12;
+		reg[rd] = pc + imm;
 	}
 
 	private void opCode0x23() {
@@ -115,6 +126,9 @@ public class CPU {
 		case 0x2: // SW
 			for (int i = 0; i < 4; i++)
 				memory[reg[rs1] + imm + i] = (byte) ((reg[rs2] >> (8 * i)) & 0xff);
+			break;
+		default:
+			printFunct3();
 			break;
 		}
 
@@ -151,6 +165,9 @@ public class CPU {
 		case 0x7: // BGEU
 			if (!((reg[rs1] < reg[rs2]) ^ (reg[rs1] < 0) ^ (reg[rs2] < 0)))
 				jumpPcByImm();
+			break;
+		default:
+			printFunct3();
 			break;
 		}
 	}
@@ -240,6 +257,9 @@ public class CPU {
 			break;
 		case 0x7: // ANDI
 			reg[rd] = reg[rs1] & imm;
+			break;
+		default:
+			printFunct3();
 			break;
 		}
 
