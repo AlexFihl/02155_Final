@@ -23,7 +23,7 @@ public class CPU {
 	public CPU() {
 		exit = -1;
 		jump = false;
-		reg[2] = memory.length - 3;
+		reg[2] = memory.length - 3; // Setting stack pointer (when user doesn't)
 	}
 
 	public boolean oneStep() {
@@ -320,5 +320,13 @@ public class CPU {
 
 	public int getOldPC() {
 		return oldPC;
+	}
+	
+	public int getMemoryEntry(int mReg) {
+		int out = 0;
+		for (int i = 0; i < 4; i++) {
+			out += ((memory[(mReg) + i] & 0xff) << (8 * i));
+		}
+		return out;
 	}
 }

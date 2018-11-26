@@ -43,6 +43,7 @@ public class RISCV_Simulator {
 				nextStep = cpu.oneStep();
 				if (debug)
 					printRG(cpu); // For testing purpose
+				//System.out.println("Reg: " + cpu.getMemoryEntry(0xffe1c)); 
 			}
 
 			System.out.println("The content of the registers was:\n");
