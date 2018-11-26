@@ -92,7 +92,7 @@ public class CPU {
 			reg[rd] += (memory[(reg[rs1] + imm) + 1]) << 8;
 			break;
 		case 0x2: // LW
-			System.out.println("PC: "+ pc + " Mem: "+ this.getMemoryEntry(reg[rs1] + imm) + " Dest: " + rd + " ");
+			//System.out.println("PC: "+ pc + " Mem: "+ this.getMemoryEntry(reg[rs1] + imm) + " Dest: " + rd + " ");
 			for (int i = 0; i < 4; i++)
 				reg[rd] += ((memory[(reg[rs1] + imm) + i] & 0xff) << (8 * i));
 			break;
@@ -125,14 +125,14 @@ public class CPU {
 			memory[reg[rs1] + imm + 1] = (byte) ((reg[rs2] >> 8) & 0xff);
 			break;
 		case 0x2: // SW
-			System.out.print("PC: "+ pc + " Membef: "+ this.getMemoryEntry(reg[rs1] + imm));
+			//System.out.print("PC: "+ pc + " Membef: "+ this.getMemoryEntry(reg[rs1] + imm));
 			for (int i = 0; i < 4; i++)
 				memory[reg[rs1] + imm + i] = (byte) ((reg[rs2] >> (8 * i)) & 0xff);
-			System.out.print(" Memaft: "+this.getMemoryEntry(reg[rs1] + imm) + " Should: " + reg[rs2] + " Id: " + (rs2) + " Imm: " + imm + " ");
+			/*System.out.print(" Memaft: "+this.getMemoryEntry(reg[rs1] + imm) + " Should: " + reg[rs2] + " Id: " + (rs2) + " Imm: " + imm + " ");
 			for (int i = 0; i < this.getReg().length; i++) {
 				System.out.print(String.format("0x%08X", this.getReg()[i]) + " ");
 			}
-			System.out.println();
+			System.out.println();*/
 			break;
 		default:
 			printFunct3();
