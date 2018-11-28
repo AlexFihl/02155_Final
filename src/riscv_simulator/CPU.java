@@ -80,7 +80,7 @@ public class CPU {
 	}
 
 	private void opCode0x03() {
-		imm = instruction >> 20;
+		getIMMIType();
 		reg[rd] = 0;
 		switch (funt3) {
 		case 0x0: // LB
@@ -108,12 +108,12 @@ public class CPU {
 	}
 
 	private void opCode0x17() { // auipc
-		imm = instruction >> 12;
+		getIMMUType();
 		reg[rd] = pc + imm;
 	}
 
 	private void opCode0x23() {
-		imm = ((instruction >> 7) & 0x1f) + ((instruction >> 25) << 5);
+		getIMMSType();
 		switch (funt3) {
 		case 0x0: // SB
 			memory[reg[rs1] + imm] = (byte) (reg[rs2] & 0xff);
@@ -134,12 +134,12 @@ public class CPU {
 	}
 
 	private void opCode0x37() { // LUI
-		reg[rd] = (instruction & (0xfffff << 12));
+		getIMMUType();
+		reg[rd] = imm;
 	}
 
 	private void opCode0x63() {
-		imm = (((instruction >> 8) & 0x0f) << 1) + (((instruction >> 25) & 0x3f) << 5)
-				+ (((instruction >> 7) & 0x01) << 11) + ((instruction >> 31) << 12);
+		getIMMBType();
 		switch (funt3) {
 		case 0x0: // BEQ
 			if (reg[rs1] == reg[rs2])
@@ -172,7 +172,7 @@ public class CPU {
 	}
 
 	private void opCode0x67() { // JALR
-		imm = instruction >> 20;
+		getIMMIType();
 		if (rd != 0)
 			reg[rd] = pc + 4;
 		jump = true;
@@ -180,8 +180,7 @@ public class CPU {
 	}
 
 	private void opCode0x6f() { // JAL
-		imm = (((instruction >> 21) & 0x3ff) << 1) + (((instruction >> 20) & 0x1) << 11) + (instruction & (0xff << 12))
-				+ ((instruction >> 31) << 20);
+		getIMMJType();
 		if (rd != 0)
 			reg[rd] = pc + 4;
 		jumpPcByImm();
@@ -228,7 +227,7 @@ public class CPU {
 	}
 
 	private void opCode0x13() {
-		imm = instruction >> 20;
+		getIMMIType();
 		switch (funt3) {
 		case 0x0: // Addi
 			reg[rd] = reg[rs1] + imm;
@@ -303,6 +302,28 @@ public class CPU {
 
 	public void loadProgram(int[] program) {
 		this.program = program;
+	}
+
+	private void getIMMIType() {
+		imm = instruction >> 20;
+	}
+	
+	private void getIMMSType() {
+		imm = ((instruction >> 7) & 0x1f) + ((instruction >> 25) << 5);
+	}
+
+	private void getIMMBType() {
+		imm = (((instruction >> 8) & 0x0f) << 1) + (((instruction >> 25) & 0x3f) << 5)
+				+ (((instruction >> 7) & 0x01) << 11) + ((instruction >> 31) << 12);
+	}
+	
+	private void getIMMUType() {
+		imm = (instruction & (0xfffff << 12));
+	}
+	
+	private void getIMMJType() {
+		imm = (((instruction >> 21) & 0x3ff) << 1) + (((instruction >> 20) & 0x1) << 11) + (instruction & (0xff << 12))
+				+ ((instruction >> 31) << 20);
 	}
 
 	public int[] getReg() {
