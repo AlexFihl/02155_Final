@@ -22,7 +22,7 @@ public class CPU {
 	public CPU() {
 		exit = -1;
 		jump = false;
-		reg[2] = memory.length - 3;
+		reg[2] = memory.length - 5;
 	}
 
 	public boolean oneStep() {
@@ -305,25 +305,30 @@ public class CPU {
 	}
 
 	private void getIMMIType() {
-		imm = instruction >> 20;
+		imm = instruction >> 20; // 11:0
 	}
 
 	private void getIMMSType() {
-		imm = ((instruction >> 7) & 0x1f) + ((instruction >> 25) << 5);
+		imm = (instruction >> 7) & 0x1f; // 4:0
+		imm += (instruction >> 25) << 5; // 11:5
 	}
 
 	private void getIMMBType() {
-		imm = (((instruction >> 8) & 0x0f) << 1) + (((instruction >> 25) & 0x3f) << 5)
-				+ (((instruction >> 7) & 0x01) << 11) + ((instruction >> 31) << 12);
+		imm = ((instruction >> 8) & 0x0f) << 1; // 4:1
+		imm += ((instruction >> 25) & 0x3f) << 5; // 10:5
+		imm += ((instruction >> 7) & 0x01) << 11; // 1
+		imm += (instruction >> 31) << 12; // 12
 	}
 
 	private void getIMMUType() {
-		imm = (instruction & (0xfffff << 12));
+		imm = instruction & (0xfffff << 12); // 31:12
 	}
 
 	private void getIMMJType() {
-		imm = (((instruction >> 21) & 0x3ff) << 1) + (((instruction >> 20) & 0x1) << 11) + (instruction & (0xff << 12))
-				+ ((instruction >> 31) << 20);
+		imm = ((instruction >> 21) & 0x3ff) << 1; // 10:1
+		imm += ((instruction >> 20) & 0x001) << 11; // 11
+		imm += (instruction & (0x0ff << 12)); // 12:19
+		imm += (instruction >> 31) << 20; // 20
 	}
 
 	public int[] getReg() {
