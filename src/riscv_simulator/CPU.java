@@ -19,7 +19,6 @@ public class CPU {
 	private int exit;
 	private boolean jump;
 
-
 	public CPU() {
 		exit = -1;
 		jump = false;
@@ -28,7 +27,7 @@ public class CPU {
 
 	public boolean oneStep() {
 		oldPC = pc;
-		instruction = program[pc/4];
+		instruction = program[pc / 4];
 		opcode = instruction & 0x7f;
 		rd = (instruction >> 7) & 0x1f;
 		funt3 = (instruction >> 12) & 0x7;
@@ -74,7 +73,7 @@ public class CPU {
 			pc += 4;
 		else
 			jump = false;
-		if (pc/4 >= program.length || exit != -1)
+		if (pc / 4 >= program.length || exit != -1)
 			return false;
 		else
 			return true;
@@ -88,7 +87,7 @@ public class CPU {
 			reg[rd] = memory[reg[rs1] + imm];
 			break;
 		case 0x1: // LH
-			reg[rd] = memory[reg[rs1] + imm] & 0xff; 
+			reg[rd] = memory[reg[rs1] + imm] & 0xff;
 			reg[rd] += (memory[(reg[rs1] + imm) + 1]) << 8;
 			break;
 		case 0x2: // LW
@@ -107,7 +106,7 @@ public class CPU {
 			break;
 		}
 	}
-	
+
 	private void opCode0x17() { // auipc
 		imm = instruction >> 12;
 		reg[rd] = pc + imm;
@@ -135,7 +134,7 @@ public class CPU {
 	}
 
 	private void opCode0x37() { // LUI
-		reg[rd] = instruction & (0xfffff << 12);
+		reg[rd] = (instruction & (0xfffff << 12));
 	}
 
 	private void opCode0x63() {
