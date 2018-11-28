@@ -2,8 +2,9 @@ package riscv_simulator;
 
 public class CPU {
 
-	private int pc;
+	private int pc, oldPC;
 	private int reg[] = new int[32];
+	private byte memory[] = new byte[0x0ffffff3];
 	private int program[];
 
 	private int instruction;
@@ -21,29 +22,45 @@ public class CPU {
 	public CPU() {
 		exit = -1;
 		jump = false;
+		reg[2] = memory.length - 3;
 	}
 
 	public boolean oneStep() {
-		instruction = program[pc];
+		oldPC = pc;
+		instruction = program[pc / 4];
 		opcode = instruction & 0x7f;
 		rd = (instruction >> 7) & 0x1f;
 		funt3 = (instruction >> 12) & 0x7;
 		rs1 = (instruction >> 15) & 0x1f;
 		rs2 = (instruction >> 20) & 0x1f;
 		funt7 = (instruction >> 25) & 0x7f;
-
 		switch (opcode) {
+		case 0x03:
+			opCode0x03();
+			break;
 		case 0x13:
 			opCode0x13();
+			break;
+		case 0x17:
+			opCode0x17();
+			break;
+		case 0x23:
+			opCode0x23();
 			break;
 		case 0x33:
 			opCode0x33();
 			break;
 		case 0x37:
-			reg[rd] = instruction & (0xfffff << 12);
+			opCode0x37();
 			break;
 		case 0x63:
 			opCode0x63();
+			break;
+		case 0x67:
+			opCode0x67();
+			break;
+		case 0x6f:
+			opCode0x6f();
 			break;
 		case 0x73:
 			opCode0x73();
@@ -53,76 +70,36 @@ public class CPU {
 			break;
 		}
 		if (!jump)
-			pc++;
+			pc += 4;
 		else
 			jump = false;
-
-		if (pc >= program.length || exit != -1)
+		if (pc / 4 >= program.length || exit != -1)
 			return false;
 		else
 			return true;
 	}
 
-	private void opCode0x63() {
-		imm = (((instruction >> 8) & 0x0f) << 1) + (((instruction >> 25) & 0x3f) << 5)
-				+ (((instruction >> 7) & 0x01) << 11) + ((instruction >> 31) << 12);
+	private void opCode0x03() {
+		getIMMIType();
+		reg[rd] = 0;
 		switch (funt3) {
-		case 0x0: // BEQ
-			if (reg[rs1] == reg[rs2])
-				jumpPcByImm();
+		case 0x0: // LB
+			reg[rd] = memory[reg[rs1] + imm];
 			break;
-		case 0x1: // BNE
-			if (reg[rs1] != reg[rs2])
-				jumpPcByImm();
+		case 0x1: // LH
+			reg[rd] = memory[reg[rs1] + imm] & 0xff;
+			reg[rd] += (memory[(reg[rs1] + imm) + 1]) << 8;
 			break;
-		case 0x4: // BLT
-			if (reg[rs1] < reg[rs2])
-				jumpPcByImm();
+		case 0x2: // LW
+			for (int i = 0; i < 4; i++)
+				reg[rd] += ((memory[(reg[rs1] + imm) + i] & 0xff) << (8 * i));
 			break;
-		case 0x5: // BGE
-			if (reg[rs1] >= reg[rs2])
-				jumpPcByImm();
+		case 0x4: // LBU
+			reg[rd] = memory[reg[rs1] + imm] & 0xff;
 			break;
-		case 0x6: // BLTU
-			if ((reg[rs1] < reg[rs2]) ^ (reg[rs1] < 0) ^ (reg[rs2] < 0))
-				jumpPcByImm();
-			break;
-		case 0x7: // BGEU
-			if (!((reg[rs1] < reg[rs2]) ^ (reg[rs1] < 0) ^ (reg[rs2] < 0)))
-				jumpPcByImm();
-			break;
-		}
-	}
-
-	private void jumpPcByImm() {
-		pc += (imm / 4);
-		jump = true;
-	}
-
-	private void printOpCode() {
-		System.out.println("PC: " + pc + ". Opcode " + String.format("0x%01X", opcode) + " not yet implemented");
-	}
-
-	private void opCode0x73() {
-		switch (funt3) {
-		case 0x0: // ecall
-			switch (reg[10]) {
-			case 0x01:
-				System.out.println(reg[11]);
-				break;
-			case 0x04:
-				break;
-			case 0x09:
-				break;
-			case 0x0a:
-				exit = reg[10];
-				break;
-			case 0x0b:// Print out ASCII signed
-				break;
-			case 0x11:
-				exit = reg[10];
-				break;
-			}
+		case 0x5: // LHU
+			reg[rd] = (memory[reg[rs1] + imm] & 0xff);
+			reg[rd] += (memory[(reg[rs1] + imm) + 1] & 0xff) << 8;
 			break;
 		default:
 			printFunct3();
@@ -130,12 +107,8 @@ public class CPU {
 		}
 	}
 
-	private void printFunct3() {
-		System.out.println("PC: " + pc + ". funt3 " + String.format("0x%01X", funt3) + " not yet implemented");
-	}
-
 	private void opCode0x13() {
-		imm = instruction >> 20;
+		getIMMIType();
 		switch (funt3) {
 		case 0x0: // Addi
 			reg[rd] = reg[rs1] + imm;
@@ -163,6 +136,35 @@ public class CPU {
 			break;
 		case 0x7: // ANDI
 			reg[rd] = reg[rs1] & imm;
+			break;
+		default:
+			printFunct3();
+			break;
+		}
+
+	}
+
+	private void opCode0x17() { // auipc
+		getIMMUType();
+		reg[rd] = pc + imm;
+	}
+
+	private void opCode0x23() {
+		getIMMSType();
+		switch (funt3) {
+		case 0x0: // SB
+			memory[reg[rs1] + imm] = (byte) (reg[rs2] & 0xff);
+			break;
+		case 0x1: // SH
+			memory[reg[rs1] + imm] = (byte) (reg[rs2] & 0xff);
+			memory[reg[rs1] + imm + 1] = (byte) ((reg[rs2] >> 8) & 0xff);
+			break;
+		case 0x2: // SW
+			for (int i = 0; i < 4; i++)
+				memory[reg[rs1] + imm + i] = (byte) ((reg[rs2] >> (8 * i)) & 0xff);
+			break;
+		default:
+			printFunct3();
 			break;
 		}
 
@@ -205,19 +207,138 @@ public class CPU {
 		}
 	}
 
+	private void opCode0x37() { // LUI
+		getIMMUType();
+		reg[rd] = imm;
+	}
+
+	private void opCode0x63() {
+		getIMMBType();
+		switch (funt3) {
+		case 0x0: // BEQ
+			if (reg[rs1] == reg[rs2])
+				jumpPcByImm();
+			break;
+		case 0x1: // BNE
+			if (reg[rs1] != reg[rs2])
+				jumpPcByImm();
+			break;
+		case 0x4: // BLT
+			if (reg[rs1] < reg[rs2])
+				jumpPcByImm();
+			break;
+		case 0x5: // BGE
+			if (reg[rs1] >= reg[rs2])
+				jumpPcByImm();
+			break;
+		case 0x6: // BLTU
+			if ((reg[rs1] < reg[rs2]) ^ (reg[rs1] < 0) ^ (reg[rs2] < 0))
+				jumpPcByImm();
+			break;
+		case 0x7: // BGEU
+			if (!((reg[rs1] < reg[rs2]) ^ (reg[rs1] < 0) ^ (reg[rs2] < 0)))
+				jumpPcByImm();
+			break;
+		default:
+			printFunct3();
+			break;
+		}
+	}
+
+	private void opCode0x67() { // JALR
+		getIMMIType();
+		if (rd != 0)
+			reg[rd] = pc + 4;
+		jump = true;
+		pc = reg[rs1] + imm;
+	}
+
+	private void opCode0x6f() { // JAL
+		getIMMJType();
+		if (rd != 0)
+			reg[rd] = pc + 4;
+		jumpPcByImm();
+	}
+
+	private void opCode0x73() {
+		switch (funt3) {
+		case 0x0: // ecall
+			switch (reg[10]) {
+			case 0x01:
+				System.out.println(reg[11]);
+				break;
+			case 0x04:
+				break;
+			case 0x09:
+				break;
+			case 0x0a:
+				exit = reg[10];
+				break;
+			case 0x0b:// Print out ASCII signed
+				break;
+			case 0x11:
+				exit = reg[10];
+				break;
+			}
+			break;
+		default:
+			printFunct3();
+			break;
+		}
+	}
+
+	private void printFunct3() {
+		System.out.println("PC: " + pc + ". funt3 " + String.format("0x%01X", funt3) + " not yet implemented");
+	}
+
+	private void jumpPcByImm() {
+		pc += imm;
+		jump = true;
+	}
+
+	private void printOpCode() {
+		System.out.println("PC: " + pc + ". Opcode " + String.format("0x%01X", opcode) + " not yet implemented");
+	}
+
 	public void loadProgram(int[] program) {
 		this.program = program;
+	}
+
+	private void getIMMIType() {
+		imm = instruction >> 20;
+	}
+
+	private void getIMMSType() {
+		imm = ((instruction >> 7) & 0x1f) + ((instruction >> 25) << 5);
+	}
+
+	private void getIMMBType() {
+		imm = (((instruction >> 8) & 0x0f) << 1) + (((instruction >> 25) & 0x3f) << 5)
+				+ (((instruction >> 7) & 0x01) << 11) + ((instruction >> 31) << 12);
+	}
+
+	private void getIMMUType() {
+		imm = (instruction & (0xfffff << 12));
+	}
+
+	private void getIMMJType() {
+		imm = (((instruction >> 21) & 0x3ff) << 1) + (((instruction >> 20) & 0x1) << 11) + (instruction & (0xff << 12))
+				+ ((instruction >> 31) << 20);
 	}
 
 	public int[] getReg() {
 		return reg;
 	}
 
-	public int getExit() {
+	public int getExitCode() {
 		return exit;
 	}
-	
+
 	public int getPC() {
 		return pc;
+	}
+
+	public int getOldPC() {
+		return oldPC;
 	}
 }
