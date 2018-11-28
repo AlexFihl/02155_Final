@@ -330,7 +330,7 @@ public class CPU {
 		return reg;
 	}
 
-	public int getExit() {
+	public int getExitCode() {
 		return exit;
 	}
 

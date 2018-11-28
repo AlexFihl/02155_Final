@@ -52,7 +52,7 @@ public class RISCV_Simulator {
 			System.out.println();
 
 			if (debug)
-				System.out.println("Exit code was: " + cpu.getExit());
+				System.out.println("Exit code was: " + cpu.getExitCode());
 
 			System.out.println("Do you want to save the registers to a file? (Y/n):");
 			if (!getScannerString(consoleReader).toLowerCase().equals("n")) {
