@@ -107,6 +107,43 @@ public class CPU {
 		}
 	}
 
+	private void opCode0x13() {
+		getIMMIType();
+		switch (funt3) {
+		case 0x0: // Addi
+			reg[rd] = reg[rs1] + imm;
+			break;
+		case 0x1: // SLLI
+			reg[rd] = reg[rs1] << (imm & 0x1f);
+			break;
+		case 0x2: // SLTI
+			reg[rd] = reg[rs1] < imm ? 1 : 0;
+			break;
+		case 0x3: // SLTIU
+			reg[rd] = ((reg[rs1] < imm) ^ (reg[rs1] < 0) ^ (imm < 0)) ? 1 : 0;
+			break;
+		case 0x4: // XORI
+			reg[rd] = reg[rs1] ^ imm;
+			break;
+		case 0x5:
+			if ((imm >>> 7) == 0x00) // SRLI
+				reg[rd] = reg[rs1] >>> (imm & 0x1f);
+			else // SRAI
+				reg[rd] = reg[rs1] >> (imm & 0x1f);
+			break;
+		case 0x6: // ORI
+			reg[rd] = reg[rs1] | imm;
+			break;
+		case 0x7: // ANDI
+			reg[rd] = reg[rs1] & imm;
+			break;
+		default:
+			printFunct3();
+			break;
+		}
+
+	}
+
 	private void opCode0x17() { // auipc
 		getIMMUType();
 		reg[rd] = pc + imm;
@@ -131,6 +168,43 @@ public class CPU {
 			break;
 		}
 
+	}
+
+	private void opCode0x33() {
+		switch (funt3) {
+		case 0x0:
+			if (funt7 == 0x00) // add
+				reg[rd] = reg[rs1] + reg[rs2];
+			else // sub
+				reg[rd] = reg[rs1] - reg[rs2];
+			break;
+		case 0x1: // sll
+			reg[rd] = reg[rs1] << (reg[rs2] & 0x1f);
+			break;
+		case 0x2: // slt
+			reg[rd] = reg[rs1] < reg[rs2] ? 1 : 0;
+			break;
+		case 0x3: // sltu
+			reg[rd] = ((reg[rs1] < reg[rs2]) ^ (reg[rs1] < 0) ^ (reg[rs2] < 0)) ? 1 : 0;
+			break;
+		case 0x4:// xor
+			reg[rd] = reg[rs1] ^ reg[rs2];
+			break;
+		case 0x5:
+			if (funt7 == 0x00) // srl
+				reg[rd] = reg[rs1] >>> (reg[rs2] & 0x1f);
+			else // sra
+				reg[rd] = reg[rs1] >> (reg[rs2] & 0x1f);
+			break;
+		case 0x6: // or
+			reg[rd] = reg[rs1] | reg[rs2];
+			break;
+		case 0x7: // and
+			reg[rd] = reg[rs1] & reg[rs2];
+		default:
+			printFunct3();
+			break;
+		}
 	}
 
 	private void opCode0x37() { // LUI
@@ -186,15 +260,6 @@ public class CPU {
 		jumpPcByImm();
 	}
 
-	private void jumpPcByImm() {
-		pc += imm;
-		jump = true;
-	}
-
-	private void printOpCode() {
-		System.out.println("PC: " + pc + ". Opcode " + String.format("0x%01X", opcode) + " not yet implemented");
-	}
-
 	private void opCode0x73() {
 		switch (funt3) {
 		case 0x0: // ecall
@@ -226,78 +291,13 @@ public class CPU {
 		System.out.println("PC: " + pc + ". funt3 " + String.format("0x%01X", funt3) + " not yet implemented");
 	}
 
-	private void opCode0x13() {
-		getIMMIType();
-		switch (funt3) {
-		case 0x0: // Addi
-			reg[rd] = reg[rs1] + imm;
-			break;
-		case 0x1: // SLLI
-			reg[rd] = reg[rs1] << (imm & 0x1f);
-			break;
-		case 0x2: // SLTI
-			reg[rd] = reg[rs1] < imm ? 1 : 0;
-			break;
-		case 0x3: // SLTIU
-			reg[rd] = ((reg[rs1] < imm) ^ (reg[rs1] < 0) ^ (imm < 0)) ? 1 : 0;
-			break;
-		case 0x4: // XORI
-			reg[rd] = reg[rs1] ^ imm;
-			break;
-		case 0x5:
-			if ((imm >>> 7) == 0x00) // SRLI
-				reg[rd] = reg[rs1] >>> (imm & 0x1f);
-			else // SRAI
-				reg[rd] = reg[rs1] >> (imm & 0x1f);
-			break;
-		case 0x6: // ORI
-			reg[rd] = reg[rs1] | imm;
-			break;
-		case 0x7: // ANDI
-			reg[rd] = reg[rs1] & imm;
-			break;
-		default:
-			printFunct3();
-			break;
-		}
-
+	private void jumpPcByImm() {
+		pc += imm;
+		jump = true;
 	}
 
-	private void opCode0x33() {
-		switch (funt3) {
-		case 0x0:
-			if (funt7 == 0x00) // add
-				reg[rd] = reg[rs1] + reg[rs2];
-			else // sub
-				reg[rd] = reg[rs1] - reg[rs2];
-			break;
-		case 0x1: // sll
-			reg[rd] = reg[rs1] << (reg[rs2] & 0x1f);
-			break;
-		case 0x2: // slt
-			reg[rd] = reg[rs1] < reg[rs2] ? 1 : 0;
-			break;
-		case 0x3: // sltu
-			reg[rd] = ((reg[rs1] < reg[rs2]) ^ (reg[rs1] < 0) ^ (reg[rs2] < 0)) ? 1 : 0;
-			break;
-		case 0x4:// xor
-			reg[rd] = reg[rs1] ^ reg[rs2];
-			break;
-		case 0x5:
-			if (funt7 == 0x00) // srl
-				reg[rd] = reg[rs1] >>> (reg[rs2] & 0x1f);
-			else // sra
-				reg[rd] = reg[rs1] >> (reg[rs2] & 0x1f);
-			break;
-		case 0x6: // or
-			reg[rd] = reg[rs1] | reg[rs2];
-			break;
-		case 0x7: // and
-			reg[rd] = reg[rs1] & reg[rs2];
-		default:
-			printFunct3();
-			break;
-		}
+	private void printOpCode() {
+		System.out.println("PC: " + pc + ". Opcode " + String.format("0x%01X", opcode) + " not yet implemented");
 	}
 
 	public void loadProgram(int[] program) {
