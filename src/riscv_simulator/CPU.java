@@ -81,7 +81,6 @@ public class CPU {
 
 	private void opCode0x03() {
 		getIMMIType();
-		reg[rd] = 0;
 		switch (funt3) {
 		case 0x0: // LB
 			reg[rd] = memory[reg[rs1] + imm];
@@ -91,6 +90,7 @@ public class CPU {
 			reg[rd] += (memory[(reg[rs1] + imm) + 1]) << 8;
 			break;
 		case 0x2: // LW
+			reg[rd] = 0;
 			for (int i = 0; i < 4; i++)
 				reg[rd] += ((memory[(reg[rs1] + imm) + i] & 0xff) << (8 * i));
 			break;
