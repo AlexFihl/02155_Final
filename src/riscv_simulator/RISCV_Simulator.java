@@ -10,7 +10,7 @@ import java.util.Scanner;
 
 public class RISCV_Simulator {
 
-	static boolean debug;;
+	static boolean debug;
 
 	public static void main(String[] args) {
 
