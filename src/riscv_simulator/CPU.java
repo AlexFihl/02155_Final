@@ -236,7 +236,7 @@ public class CPU {
 				jumpPcByImm();
 			break;
 		case 0x7: // BGEU
-			if (!((reg[rs1] >= reg[rs2]) ^ (reg[rs1] < 0) ^ (reg[rs2] < 0)))
+			if (!((reg[rs1] < reg[rs2]) ^ (reg[rs1] < 0) ^ (reg[rs2] < 0)))
 				jumpPcByImm();
 			break;
 		default:
