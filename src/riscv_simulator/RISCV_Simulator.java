@@ -56,7 +56,7 @@ public class RISCV_Simulator {
 
 			System.out.println("Do you want to save the registers to a file? (Y/n):");
 			if (!getScannerString(consoleReader).toLowerCase().equals("n")) {
-				System.out.println("Write name of the output file: ");
+				System.out.println("Write name of the output file, it automatic adds .res: ");
 				String nameOfOutputFile = getScannerString(consoleReader);
 				printRegistersToFile(cpu, nameOfOutputFile);
 			}
