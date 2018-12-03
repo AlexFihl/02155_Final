@@ -277,7 +277,7 @@ public class CPU {
 			case 0x0b:// Print out ASCII signed
 				break;
 			case 0x11:
-				exit = reg[10];
+				exit = reg[11];
 				break;
 			}
 			break;
